@@ -1,5 +1,6 @@
 # API key
 api_key
+api_key.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

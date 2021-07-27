@@ -6,7 +6,9 @@ from datetime import date, datetime
 from requests.models import Response
 
 # Global Params
-API_KEY = ''
+with open("api_key.txt") as f:
+  API_KEY = f.readline().rstrip()
+
 CONTENT_TYPE = "application/json"
 
 # Global Variables
