@@ -1,7 +1,7 @@
 from time import sleep
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from requests.models import Response
 
@@ -61,20 +61,15 @@ def getIDs():
 
 # Getting the time now and day of week
 def getTime():
-
-  now = datetime.now()
-  nameOfDay = datetime.now().strftime('%A')
   
   #2021-07-27T08:00:00Z
-  hour = int(now.strftime("%H"))
+  # The API for some reason takes an hour away
+  # I think is due to TimeZone Location
+  nowSub = datetime.now() - timedelta(hours=1)
+  format_time = nowSub.strftime(f"%Y-%m-%dT%H:%M:%SZ")
   
-  if hour == 00:
-    hour = 23
-  else:
-    hour = hour - 1
-
-  format_time = now.strftime(f"%Y-%m-%dT{hour}:%M:%SZ")
-
+  nameOfDay = datetime.now().strftime('%A')
+  
   return format_time, nameOfDay
 
 # Creating a new time entry

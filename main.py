@@ -17,7 +17,7 @@ import Modules.logger as logger
 #TODO ACTIVATE API
 ids = logger.getIDs()
 startResponse = logger.startLog()
-sleep(120)
+sleep(5)
 endResponse = logger.terminateLog()
 
 print(startResponse)
