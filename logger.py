@@ -6,7 +6,7 @@ from datetime import date, datetime
 from requests.models import Response
 
 # Global Params
-API_KEY = "ZjJiMzZhYjUtMDVlYy00MDdjLTgyZGMtZDkyMGY4MGJmMDVm"
+API_KEY = ''
 CONTENT_TYPE = "application/json"
 
 # Global Variables
@@ -105,7 +105,7 @@ def main():
   print(startResponse)
 
   sleep(10)
-  
+
   time, nameOfDay = getTime()
   endResponse = [endEntry(time, nameOfDay), body]
   print(endResponse)
