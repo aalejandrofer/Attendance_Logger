@@ -2,6 +2,8 @@
 api_key
 api_key.txt
 
+.vscode/*
+.vscode/launch.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
