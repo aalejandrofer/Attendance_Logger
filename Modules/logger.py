@@ -88,7 +88,7 @@ def startEntry(time, nameOfDay):
   return response
 
 # Ending the time entry
-def endEntry(time, nameOfDay):
+def endEntry(time):
   global body
 
   body = {
@@ -97,19 +97,3 @@ def endEntry(time, nameOfDay):
 
   response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(body), headers=headers)
   return response
-
-def main():
-
-  getIDs()
-
-  time, nameOfDay = getTime()
-  startResponse = [startEntry(time, nameOfDay), body]
-  print(startResponse)
-
-  sleep(10)
-
-  time, nameOfDay = getTime()
-  endResponse = [endEntry(time, nameOfDay), body]
-  print(endResponse)
-
-main()
