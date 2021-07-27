@@ -1,16 +1,26 @@
 from time import sleep
 import Modules.logger as logger
-import Modules.display as display
-import Modules.serial as serial
+#import Modules.display as display
+#import Modules.serial as serial
 
-while True:
+# Coded in Python 3.8
+# Install Pip3 to get the requests dependancy
+# Example: sudo apt-get -y install python3-pip python3 && pip install requests
 
-  logger.getIDs()
+# System set up
+#status = serial.setUp()
 
-  time, nameOfDay = logger.getTime()
-  startResponse = [logger.startEntry(time, nameOfDay), logger.body]
-  print(startResponse)
+# Startin the loop when program starts up
 
-  time, nameOfDay = logger.getTime()
-  endResponse = [logger.endEntry(time), logger.body]
-  print(endResponse)
+
+
+#TODO ACTIVATE API
+ids = logger.getIDs()
+startResponse = logger.startLog()
+sleep(120)
+endResponse = logger.terminateLog()
+
+print(startResponse)
+print(endResponse)
+
+  

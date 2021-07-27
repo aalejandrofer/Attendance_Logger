@@ -1,7 +1,7 @@
 from time import sleep
 import requests
 import json
-from datetime import date, datetime
+from datetime import datetime
 
 from requests.models import Response
 
@@ -55,6 +55,10 @@ def getIDs():
   task_id = taskID['id']
   task_name = taskID['name']
 
+  ids = {"workId": workspace_id, "userId":user_id, "username": user_name, "projectId": project_id, "taskId": task_id, "taskName": task_name}
+
+  return ids
+
 # Getting the time now and day of week
 def getTime():
 
@@ -62,7 +66,13 @@ def getTime():
   nameOfDay = datetime.now().strftime('%A')
   
   #2021-07-27T08:00:00Z
-  hour = int(now.strftime("%H")) - 1
+  hour = int(now.strftime("%H"))
+  
+  if hour == 00:
+    hour = 23
+  else:
+    hour = hour - 1
+
   format_time = now.strftime(f"%Y-%m-%dT{hour}:%M:%SZ")
 
   return format_time, nameOfDay
@@ -89,6 +99,7 @@ def startEntry(time, nameOfDay):
 
 # Ending the time entry
 def endEntry(time):
+
   global body
 
   body = {
@@ -97,3 +108,22 @@ def endEntry(time):
 
   response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(body), headers=headers)
   return response
+
+# Starts the entry logger
+def startLog():
+  time, nameOfDay = getTime()
+  startResponse = [startEntry(time, nameOfDay), body]
+  return startResponse
+
+# Ends the entry logger
+def terminateLog():
+  time, nameOfDay = getTime()
+  endResponse = [endEntry(time), body]
+  return endResponse
+
+#def mainLogger():
+  #ids = getIDs()
+  #startResponse = startLog()
+  #endResponse = terminateLog()
+  #print(startResponse)
+#mainLogger()

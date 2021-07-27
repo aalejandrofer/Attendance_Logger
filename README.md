@@ -9,3 +9,4 @@ Raspberry Pi OS will run the Pythong file on boot and connect Python with the RF
 Communicates with the https://api.clockify.me/api/v1 API to create a time stamp when it detects an RFI signal
 
 > api_key.txt file needed so python can get the api_key from there, it will read the first line
+  > api_key.txt in root folder
