@@ -1,4 +1,5 @@
 from time import sleep
+from datetime import datetime
 import Modules.logger as logger
 #import Modules.display as display
 #import Modules.serial as serial
@@ -17,10 +18,14 @@ import Modules.logger as logger
 #TODO ACTIVATE API
 ids = logger.getIDs()
 startResponse = logger.startLog()
-sleep(5)
+sleep(1)
 endResponse = logger.terminateLog()
 
-print(startResponse)
-print(endResponse)
+# Logging to txt file
+with open("RFID.log", "a") as f:
+  now = datetime.now().strftime("%d-%m-%Y %H:%M")
+  f.write(f"{now} : {startResponse}\n")
+  f.write(f"{now} : {endResponse}\n")
+  f.close()
 
   
