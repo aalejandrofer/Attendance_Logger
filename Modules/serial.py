@@ -29,7 +29,7 @@ import RPi.GPIO as GPIO
   # https://github.com/sbcshop/SB-RFID-HAT #
 #########################################################
 
-## SOURCE of Part of the Code ##
+## SOURCE Code ##
 # https://github.com/sbcshop/SB-RFID-HAT #
 
 def setUp():
@@ -55,5 +55,30 @@ def setUp():
         ser.close ()                                                   #Close port
         data=data.decode("utf-8")
         return data
+  
+  def info_print():
 
-  return status
+    # display.WhiteDisplay()
+    #display.DirImage(path.join(DIR_PATH, "Images/SB.png"))
+    #display.DrawRect()
+    #display.ShowImage()
+    sleep(1)
+    #display.PrintText("Place your TAG", FontSize=14)
+    #display.ShowImage()
+  
+  display = SSD1306()
+  SB = read_rfid()
+
+  if __name__ == "__main__":
+    info_print()
+    while True:
+        id=SB.read_rfid()
+        print (id)
+        #CPU = info.CPU_Info()
+        # display.DirImage("Images/CPU.png", size=(24, 24), cords=(0, 0))
+        display.PrintText("ID : " +(id), cords=(4, 8), FontSize=11)
+        display.DrawRect()
+        display.ShowImage()
+        sleep(2)
+        display.PrintText("Place your TAG", FontSize=14)
+        display.ShowImage()

@@ -2,7 +2,7 @@
 
 Simple and Quick project, using these products:
 - Raspberry Pi 4 Model B 2Gb
-- RFID HAT for Raspberry Pi
+- RFID HAT for Raspberry Pi (SB Components)
 
 Raspberry Pi OS will run the Pythong file on boot and connect Python with the RFID
 
