@@ -60,8 +60,8 @@ def setUp():
 
     # display.WhiteDisplay()
     #display.DirImage(path.join(DIR_PATH, "Images/SB.png"))
-    #display.DrawRect()
-    #display.ShowImage()
+    display.DrawRect()
+    display.ShowImage()
     sleep(1)
     #display.PrintText("Place your TAG", FontSize=14)
     #display.ShowImage()

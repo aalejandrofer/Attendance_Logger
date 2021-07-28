@@ -1,18 +1,16 @@
 from time import sleep
 from datetime import datetime
 import Modules.logger as logger
-#import Modules.display as display
-#import Modules.serial as serial
+import Modules.serial as serial
 
 # Coded in Python 3.8
 # Install Pip3 to get the requests dependancy
 # Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
 
 # System set up
-#status = serial.setUp()
+status = serial.setUp()
 
 # Startin the loop when program starts up
-
 
 
 #TODO ACTIVATE API
