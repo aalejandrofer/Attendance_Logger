@@ -7,23 +7,25 @@ import Modules.serial as serial
 # Install Pip3 to get the requests dependancy
 # Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
 
-# System set up
-status = serial.setUp()
-
 # Startin the loop when program starts up
 
+while True:
 
-#TODO ACTIVATE API
-ids = logger.getIDs()
-startResponse = logger.startLog()
-sleep(1)
-endResponse = logger.terminateLog()
+  idRead = serial.read_rfid()
 
-# Logging to txt file
-with open("RFID.log", "a") as f:
-  now = datetime.now().strftime("%d-%m-%Y %H:%M")
-  f.write(f"{now} : {startResponse}\n")
-  f.write(f"{now} : {endResponse}\n")
-  f.close()
+  if idRead:
+
+    ids = logger.getIDs()
+    startResponse = logger.startLog()
+    sleep(1)
+    endResponse = logger.terminateLog()
+
+    # Logging to txt file
+    with open("RFID.log", "a") as f:
+      now = datetime.now().strftime("%d-%m-%Y %H:%M")
+      f.write(f"{now} : {startResponse}\n")
+      f.write(f"{now} : {endResponse}\n")
+      f.close()
+    
 
   
