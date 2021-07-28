@@ -4,8 +4,7 @@ api_key.txt
 
 #.vscode
 .vscode/*
-gitExample.py
-gitExample
+*gitExample.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
