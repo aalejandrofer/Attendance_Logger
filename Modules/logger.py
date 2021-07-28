@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from requests.models import Response
 
 # Global Params
-with open("api_key.txt") as f:
+with open("/home/pi/api_key.txt") as f:
   API_KEY = f.readline().rstrip()
 
 CONTENT_TYPE = "application/json"
