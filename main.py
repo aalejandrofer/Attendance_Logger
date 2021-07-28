@@ -15,6 +15,8 @@ while True:
 
   if idRead:
 
+    print("Read")
+
     ids = logger.getIDs()
     startResponse = logger.startLog()
     sleep(1)
