@@ -29,9 +29,31 @@ import RPi.GPIO as GPIO
   # https://github.com/sbcshop/SB-RFID-HAT #
 #########################################################
 
+## SOURCE of Part of the Code ##
+# https://github.com/sbcshop/SB-RFID-HAT #
+
 def setUp():
 
   status = False
 
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setwarnings(False)
+  GPIO.setup(17,GPIO.OUT)
+
+  DIR_PATH = path.abspath(path.dirname(__file__))
+  DefaultFont = path.join(DIR_PATH, "Fonts/GothamLight.ttf")
+
+  class read_rfid:
+    def read_rfid (self):
+        ser = serial.Serial ("/dev/ttyS0")                           #Open named port 
+        ser.baudrate = 9600                                            #Set baud rate to 9600
+        data = ser.read(12)                                            #Read 12 characters from serial port to data
+        if(data != " "):
+            GPIO.output(17,GPIO.HIGH)
+            sleep(.2)
+            GPIO.output(17,GPIO.LOW)
+        ser.close ()                                                   #Close port
+        data=data.decode("utf-8")
+        return data
 
   return status
