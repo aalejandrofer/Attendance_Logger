@@ -3,6 +3,8 @@ import requests
 import json
 from datetime import datetime, timedelta
 
+from requests.api import get
+
 # Global Params
 API_PATH = "./api_key.txt"
 with open(API_PATH) as f:
@@ -105,19 +107,14 @@ def endEntry(time):
 
 # Starts the entry logger
 def startLog():
+  ids = getIDs()
   time, nameOfDay = getTime()
   startResponse = [startEntry(time, nameOfDay), body]
   return startResponse
 
 # Ends the entry logger
 def terminateLog():
+  ids = getIDs()
   time, nameOfDay = getTime()
   endResponse = [endEntry(time), body]
   return endResponse
-
-#def mainLogger():
-  #ids = getIDs()
-  #startResponse = startLog()
-  #endResponse = terminateLog()
-  #print(startResponse)
-#mainLogger()

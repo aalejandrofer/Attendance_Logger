@@ -6,7 +6,8 @@ api_key.txt
 .vscode/*
 lastStatus.txt
 *gitExample.*
-test.py
+.test.py
+lastCheckIn.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
