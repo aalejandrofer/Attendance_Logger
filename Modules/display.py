@@ -63,17 +63,18 @@ def waitingToRead():
   display.ShowImage()
         
 def displayRead():
-  
   display.DrawRect()
   display.PrintText("ID Read, Starting Timer", cords=(4, 8), FontSize=11)
+  display.ShowImage()
 
 def displayTimer():
   display.DrawRect()
   display.PrintText("Logged In, Counting", cords=(4, 8), FontSize=11)
+  display.ShowImage()
 
 def displayEnd():
   display.DrawRect()
   display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
-
+  display.ShowImage()
 
 

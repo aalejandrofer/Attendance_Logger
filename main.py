@@ -38,7 +38,7 @@ if __name__ == "__main__":
           f.write(f"{now} : {startResponse}\n")
           f.close()
           
-        # Reset Timer
+        # Reset
         sleep(10)
         display.displayTimer()
         
@@ -46,9 +46,6 @@ if __name__ == "__main__":
 
         ids = logger.getIDs()
         endResponse = logger.terminateLog()
-
-        # Back to main stage
-        status = False
 
         display.displayEnd()
 
@@ -59,9 +56,9 @@ if __name__ == "__main__":
           f.write(f"{now} : {endResponse}\n")
           f.close()
 
-        # Reset Timer
+        # Back to main stage
+        status = False
         sleep(10)
-
         display.waitingToRead()
 
 
