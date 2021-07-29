@@ -1,10 +1,10 @@
 # API key
-api_key
-api_key.txt
+api_key.*
 
 #.vscode
 .vscode/*
-lastStatus.txt
+*.conf
+*.log
 *gitExample.*
 test.py
 lastCheckIn.txt

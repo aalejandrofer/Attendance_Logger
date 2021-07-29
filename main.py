@@ -1,5 +1,6 @@
 from time import sleep
 from datetime import date, datetime
+import os
 
 # Modules
 import Modules.logger as logger
@@ -9,11 +10,12 @@ import Modules.display as display
 # Install Pip3 to get the requests dependancy
 # Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # False if start entry not entered
 # True if timer is running
-
 def checkStatus():
-  PATH = "./.lastStatus.txt"
+  PATH = os.path.join(ROOT_DIR, 'status.conf')
   try:
     status = open(PATH, "r+").readline().rstrip()
     if status != 'False' and status != 'True':
@@ -35,7 +37,7 @@ def checkStatus():
     return False
 
 def writeStatus(status):
-  PATH = "./.lastStatus.txt"
+  PATH = os.path.join(ROOT_DIR, 'status.conf')
   f = open(PATH, "w")
   f.write(f"{status}")
   f.close
@@ -49,7 +51,7 @@ def checkRFData(data):
 
 #Incase user forgets to logout
 def check9hr():
-  PATH = "./.lastCheckIn.txt"
+  PATH = os.path.join(ROOT_DIR, 'login.conf')
 
   with open(PATH, "r") as f:
     now = datetime.now().strftime("%H")
@@ -70,7 +72,7 @@ def startTimer():
   writeStatus(True)
 
   # Logging Start time
-  PATH = "./.lastCheckIn.txt"
+  PATH = os.path.join(ROOT_DIR, 'login.conf')
   with open(PATH, "w+") as f:
     now = datetime.now().strftime("%H")
     f.write(now)

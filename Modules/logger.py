@@ -2,11 +2,14 @@ from time import sleep
 import requests
 import json
 from datetime import datetime, timedelta
+import os
 
 from requests.api import get
 
 # Global Params
-API_PATH = "./api_key.txt"
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+API_PATH = os.path.join(ROOT_DIR, 'api_key.conf')
+
 with open(API_PATH) as f:
   API_KEY = f.readline().rstrip()
 
