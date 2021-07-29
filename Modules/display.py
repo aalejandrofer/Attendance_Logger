@@ -42,23 +42,37 @@ DefaultFont = path.join(DIR_PATH, "Fonts/GothamLight.ttf")
 
 display = SSD1306()
 
-def read_rfid ():
-   ser = serial.Serial ("/dev/ttyS0")
-   ser.baudrate = 9600
-   data = ser.read(12)
-   ser.close ()
+class read_rfid:
+  def read_rfid (self):
+    ser = serial.Serial ("/dev/ttyS0")
+    ser.baudrate = 9600
+    data = ser.read(12)
+    ser.close ()
 
-   if data.__sizeof__ != 0:
-     return True
+    if data.__sizeof__ != 0:
+      GPIO.output(17,GPIO.HIGH)
+      sleep(.2)
+      GPIO.output(17,GPIO.LOW)
+      return True
 
-   return False
+    return False
 
-def white():
-  display.WhiteDisplay()
+def waitingToRead():
+  display.DrawRect()
+  display.PrintText("Waiting To Read", FontSize=14)
+  display.ShowImage()
         
-        
+def displayRead():
+  display.DrawRect()
+  display.PrintText("ID Read, Starting Timer", cords=(4, 8), FontSize=11)
 
+def displayTimer():
+  display.DrawRect()
+  display.PrintText("Logged In, Counting", cords=(4, 8), FontSize=11)
 
+def displayEnd():
+  display.DrawRect()
+  display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
 
 
 

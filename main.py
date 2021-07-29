@@ -12,16 +12,17 @@ import Modules.display as display
 # False if start entry not entered
 # True if timer is running
 status = False
+display.waitingToRead()
 
 # Startin the loop when program starts up
 while True:
 
   idRead = display.read_rfid()
-  display.white()
 
   if idRead:
 
     if status == False:
+      display.displayRead()
 
       ids = logger.getIDs()
       startResponse = logger.startLog()
@@ -37,6 +38,7 @@ while True:
       
       # Reset Timer
       sleep(10)
+      display.displayTimer()
     
     else:
 
@@ -45,6 +47,8 @@ while True:
 
       # Back to main stage
       status = False
+
+      display.displayEnd()
 
       # Logging to txt file
       with open("RFID.log", "a") as f:
@@ -55,6 +59,8 @@ while True:
 
       # Reset Timer
       sleep(10)
+
+      display.waitingToRead()
 
 
 
