@@ -53,6 +53,9 @@ class read_rfid:
         GPIO.output(17,GPIO.LOW)
     ser.close ()
     data=data.decode("utf-8")
+
+    print(data)
+    print(type(data))
     return data
 
 def waitingToRead():
