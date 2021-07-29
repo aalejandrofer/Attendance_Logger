@@ -62,7 +62,7 @@ class read_rfid:
     print(type(data))
     return data
 
-test = read_rfid()
+test = read_rfid.read_rfid()
 
 def waitingToRead():
   display.DrawRect()
