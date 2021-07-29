@@ -40,8 +40,6 @@ def checkRFData(data):
   if data == ("02004819B2E1"):
     return True
   else:
-    print(data)
-    print(type(data))
     return False
 
 if __name__ == "__main__":
