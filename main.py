@@ -27,8 +27,10 @@ def checkStatus():
     status = open(PATH).readline().rstrip()
   
   if status == 'True':
+    display.displayTimer()
     return True
   else:
+    display.waitingToRead()
     return False
 
 def writeStatus(status):
