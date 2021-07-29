@@ -65,6 +65,7 @@ def check9hr():
 def startTimer():
 
   startResponse = logger.startLog()
+  print("Starting Timer")
 
   writeStatus(True)
 
@@ -89,6 +90,7 @@ def startTimer():
 def endTimer():
   
   endResponse = logger.terminateLog()
+  print("Ending Timer")
 
   display.displayEnd()
 
