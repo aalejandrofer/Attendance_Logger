@@ -62,6 +62,8 @@ class read_rfid:
     print(type(data))
     return data
 
+test = read_rfid()
+
 def waitingToRead():
   display.DrawRect()
   display.PrintText("Waiting To Read", FontSize=14)
