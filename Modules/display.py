@@ -82,6 +82,8 @@ def displayStart():
   display.DrawRect()
   display.PrintText("WELCOME", FontSize=14)
   sleep(0.2)
+  display.ShowImage()
   display.PrintText("SCAN TO START", FontSize=14)
   sleep(0.2)
+  display.ShowImage()
   waitingToRead()
