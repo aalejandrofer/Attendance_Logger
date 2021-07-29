@@ -56,7 +56,7 @@ if __name__ == "__main__":
   # Startin the loop when program starts up
   while True:
 
-    data = display.read_rfid()
+    data = display.read_rfid().read_rfid()
     isRead = checkRFData(data)
 
     if isRead:
