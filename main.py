@@ -1,3 +1,4 @@
+from gitExample import read_rfid
 from time import sleep
 from datetime import datetime
 
@@ -14,12 +15,13 @@ import Modules.display as display
 status = False
 display.waitingToRead()
 
-# Startin the loop when program starts up
-while True:
+rfid = read_rfid()
 
-  idRead = display.read_rfid()
+if __name__ == "__main__":
+  # Startin the loop when program starts up
+  while True:
 
-  if idRead:
+    idRead = rfid.read_rfid()
 
     if status == False:
       display.displayRead()
@@ -33,13 +35,12 @@ while True:
       with open("RFID.log", "a") as f:
         now = datetime.now().strftime("%d-%m-%Y %H:%M")
         f.write(f"{now} : {startResponse}\n")
-        #f.write(f"{now} : {endResponse}\n")
         f.close()
+        
+        # Reset Timer
+        sleep(10)
+        display.displayTimer()
       
-      # Reset Timer
-      sleep(10)
-      display.displayTimer()
-    
     else:
 
       ids = logger.getIDs()

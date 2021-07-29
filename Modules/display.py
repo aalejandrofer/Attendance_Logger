@@ -63,6 +63,7 @@ def waitingToRead():
   display.ShowImage()
         
 def displayRead():
+  
   display.DrawRect()
   display.PrintText("ID Read, Starting Timer", cords=(4, 8), FontSize=11)
 
