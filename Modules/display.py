@@ -57,12 +57,7 @@ class read_rfid:
         GPIO.output(17,GPIO.LOW)
     ser.close ()
     data=data.decode("utf-8")
-
-    print(data)
-    print(type(data))
     return data
-
-test = read_rfid.read_rfid()
 
 def waitingToRead():
   display.DrawRect()
@@ -80,6 +75,21 @@ def displayTimer():
   display.ShowImage()
 
 def displayEnd():
+
   display.DrawRect()
   display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
   display.ShowImage()
+
+def read_rfid2 ():
+   ser = serial.Serial ("/dev/ttyS0")                           #Open named port 
+   ser.baudrate = 9600                                            #Set baud rate to 9600
+   data = ser.read(12)                                            #Read 12 characters from serial port to data
+   ser.close ()                                                   #Close port
+   data=data.decode("utf-8")
+
+   print(data)
+   print(type(data))
+   return data                                                    #Return data
+
+id = read_rfid2 ()                                              #Function call
+print (id)   
