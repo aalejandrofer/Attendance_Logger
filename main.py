@@ -38,8 +38,10 @@ def writeStatus(status):
 
 def checkRFData(data):
   if data == ("02004819B2E1"):
+    print("Read and true")
     return True
   else:
+    print("Read but False")
     return False
 
 if __name__ == "__main__":
