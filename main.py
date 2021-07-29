@@ -17,8 +17,8 @@ rfid = display.read_rfid()
 
 if __name__ == "__main__":
 
-  display.displayStart()
-  
+  display.waitingToRead()
+
   # Startin the loop when program starts up
   while True:
 

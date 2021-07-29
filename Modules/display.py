@@ -76,14 +76,3 @@ def displayEnd():
   display.ShowImage()
   display.DrawRect()
   display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
-
-def displayStart():
-  display.ShowImage()
-  display.DrawRect()
-  display.PrintText("WELCOME", FontSize=14)
-  sleep(0.2)
-  display.ShowImage()
-  display.PrintText("SCAN TO START", FontSize=14)
-  sleep(0.2)
-  display.ShowImage()
-  waitingToRead()
