@@ -89,6 +89,7 @@ def read_rfid2 ():
 
    print(data)
    print(type(data))
+   open("./id", "+w").write(data)
    return data                                                    #Return data
 
 id = read_rfid2 ()                                              #Function call
