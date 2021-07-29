@@ -13,7 +13,7 @@ import Modules.display as display
 # True if timer is running
 
 def checkStatus():
-  PATH = "./lastStatus.txt"
+  PATH = "./.lastStatus.txt"
   try:
     status = open(PATH, "r+").readline().rstrip()
     if status != 'False' and status != 'True':
@@ -35,13 +35,13 @@ def checkStatus():
     return False
 
 def writeStatus(status):
-  PATH = "./lastStatus.txt"
+  PATH = "./.lastStatus.txt"
   f = open(PATH, "w")
   f.write(f"{status}")
   f.close
 
 def checkRFData(data):
-  if data == ("02004819B2E1") or data == ("02004819B2E1"): #TODO add card ID
+  if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
     display.createSound()
     display.displayRead()
     return True
@@ -50,7 +50,7 @@ def checkRFData(data):
 
 #Incase user forgets to logout
 def check9hr():
-  PATH = "./lastCheckIn.txt"
+  PATH = "./.lastCheckIn.txt"
 
   with open(PATH, "r") as f:
     now = datetime.now().strftime("%H")
@@ -70,7 +70,7 @@ def startTimer():
   writeStatus(True)
 
   # Logging Start time
-  PATH = "./lastCheckIn.txt"
+  PATH = "./.lastCheckIn.txt"
   with open(PATH, "w+") as f:
     now = datetime.now().strftime("%H")
     f.write(now)
