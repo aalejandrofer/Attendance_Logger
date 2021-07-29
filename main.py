@@ -48,11 +48,6 @@ if __name__ == "__main__":
 
   status = checkStatus()
 
-  if status:
-    display.displayRead()
-  else:
-    display.waitingToRead()
-
   # Startin the loop when program starts up
   while True:
 
