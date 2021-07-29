@@ -22,45 +22,47 @@ if __name__ == "__main__":
 
     idRead = rfid.read_rfid()
 
-    if status == False:
-      display.displayRead()
+    if idRead:
 
-      ids = logger.getIDs()
-      startResponse = logger.startLog()
+      if status == False:
+        display.displayRead()
 
-      status = True
+        ids = logger.getIDs()
+        startResponse = logger.startLog()
 
-      # Logging to txt file
-      with open("RFID.log", "a") as f:
-        now = datetime.now().strftime("%d-%m-%Y %H:%M")
-        f.write(f"{now} : {startResponse}\n")
-        f.close()
-        
+        status = True
+
+        # Logging to txt file
+        with open("RFID.log", "a") as f:
+          now = datetime.now().strftime("%d-%m-%Y %H:%M")
+          f.write(f"{now} : {startResponse}\n")
+          f.close()
+          
         # Reset Timer
         sleep(10)
         display.displayTimer()
-      
-    else:
+        
+      else:
 
-      ids = logger.getIDs()
-      endResponse = logger.terminateLog()
+        ids = logger.getIDs()
+        endResponse = logger.terminateLog()
 
-      # Back to main stage
-      status = False
+        # Back to main stage
+        status = False
 
-      display.displayEnd()
+        display.displayEnd()
 
-      # Logging to txt file
-      with open("RFID.log", "a") as f:
-        now = datetime.now().strftime("%d-%m-%Y %H:%M")
-        #f.write(f"{now} : {startResponse}\n")
-        f.write(f"{now} : {endResponse}\n")
-        f.close()
+        # Logging to txt file
+        with open("RFID.log", "a") as f:
+          now = datetime.now().strftime("%d-%m-%Y %H:%M")
+          #f.write(f"{now} : {startResponse}\n")
+          f.write(f"{now} : {endResponse}\n")
+          f.close()
 
-      # Reset Timer
-      sleep(10)
+        # Reset Timer
+        sleep(10)
 
-      display.waitingToRead()
+        display.waitingToRead()
 
 
 
