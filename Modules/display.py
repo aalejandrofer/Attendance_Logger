@@ -66,7 +66,7 @@ def createSound():
 
 def waitingToRead():
   display.DrawRect()
-  display.PrintText("Waiting To Read", FontSize=14)
+  display.PrintText("Waiting To Read", FontSize=12)
   display.ShowImage()
         
 def displayRead():
