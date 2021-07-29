@@ -64,11 +64,11 @@ def welcomeUser():
   display.DrawRect()
   display.PrintText("Welcome!", cords=(4, 8), FontSize=13)
   display.ShowImage()
-  sleep(0.3)
+  sleep(1)
   display.DrawRect()
   display.PrintText("Loading...", cords=(4, 8), FontSize=13)
   display.ShowImage()
-  sleep(0.2)
+  sleep(1)
   waitingToRead()
 
 def waitingToRead():
