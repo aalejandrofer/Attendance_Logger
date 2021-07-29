@@ -57,7 +57,7 @@ def check9hr():
 
     difference = int(now) - int(startTime)
 
-    if difference >= 1:
+    if difference >= 9:
       endTimer()
 
 # Create a timer
