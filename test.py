@@ -10,8 +10,11 @@ def check9hr():
 
   with open(PATH, "r") as f:
     now = datetime.now().strftime("%H")
-    startTime = datetime.strftime(f.readline().rstrip(), "%H")
+    startTime = f.readline().rstrip()
 
-    difference = startTime - now
+    difference = int(now) - int(startTime)
 
-    print(difference)
+    print(f"{now} - {startTime}")
+    
+  
+check9hr()

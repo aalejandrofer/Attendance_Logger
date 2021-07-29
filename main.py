@@ -53,9 +53,12 @@ def check9hr():
 
   with open(PATH, "r") as f:
     now = datetime.now().strftime("%H")
-    startTime = datetime.strftime(f.readline().rstrip(), "%H")
+    startTime = f.readline().rstrip()
 
-    difference = startTime - now
+    difference = int(now) - int(startTime)
+
+    if difference >= 9:
+      endTimer(status=True)
 
 # Create a timer
 def startTimer(status):
@@ -68,7 +71,8 @@ def startTimer(status):
   writeStatus(True)
 
   # Logging Start time
-  with open("./lastCheckIn.txt", "w+") as f:
+  PATH = "./lastCheckIn.txt"
+  with open(PATH, "w+") as f:
     now = datetime.now().strftime("%H")
     f.write(now)
     f.close()
