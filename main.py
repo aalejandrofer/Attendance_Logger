@@ -1,7 +1,9 @@
 from time import sleep
 from datetime import datetime
+
+# Modules
 import Modules.logger as logger
-import Modules.serial as serial
+import Modules.display as display
 
 # Coded in Python 3.8
 # Install Pip3 to get the requests dependancy
@@ -14,10 +16,10 @@ status = False
 # Startin the loop when program starts up
 while True:
 
-  idRead = serial.read_rfid()
+  idRead = display.read_rfid()
+  display.white()
 
   if idRead:
-    #print("Read")
 
     if status == False:
 
@@ -34,7 +36,7 @@ while True:
         f.close()
       
       # Reset Timer
-      sleep(5)
+      sleep(10)
     
     else:
 
@@ -52,7 +54,7 @@ while True:
         f.close()
 
       # Reset Timer
-      sleep(5)
+      sleep(10)
 
 
 
