@@ -43,6 +43,7 @@ def writeStatus(status):
 def checkRFData(data):
   if data == ("02004819B2E1") or data == ("02004819B2E1"): #TODO add card ID
     display.createSound()
+    display.displayRead()
     return True
   else:
     return False
@@ -106,10 +107,8 @@ def endTimer():
 
 if __name__ == "__main__":
 
-  #TODO add a display welcome screen
-
-  #Ready to read
-  display.waitingToRead()
+  display.welcomeUser()
+  sleep(0.5)
 
   # Startin the loop when program starts up
   while True:
@@ -120,10 +119,11 @@ if __name__ == "__main__":
     isRead = checkRFData(data)
 
     if isRead:
-      startTimer()
+      if status == False:
+        startTimer()
 
-    else:
-      endTimer()
+      elif status == True:
+        endTimer()
     
     if status:
       hour9 = check9hr()

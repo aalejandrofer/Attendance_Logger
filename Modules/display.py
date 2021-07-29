@@ -50,10 +50,6 @@ def read_rfid():
   ser = serial.Serial ("/dev/ttyS0")
   ser.baudrate = 9600
   data = ser.read(12)
-  #if(data != " "):
-      #GPIO.output(17,GPIO.HIGH)
-      #sleep(.2)
-      #GPIO.output(17,GPIO.LOW)
   ser.close ()
   data=data.decode("utf-8")
   return data
@@ -64,14 +60,25 @@ def createSound():
   sleep(.2)
   GPIO.output(17,GPIO.LOW)
 
+def welcomeUser():
+  display.DrawRect()
+  display.PrintText("Welcome!", cords=(4, 8), FontSize=13)
+  display.ShowImage()
+  sleep(0.3)
+  display.DrawRect()
+  display.PrintText("Loading...", cords=(4, 8), FontSize=13)
+  display.ShowImage()
+  sleep(0.2)
+  waitingToRead()
+
 def waitingToRead():
   display.DrawRect()
-  display.PrintText("Waiting To Read", FontSize=12)
+  display.PrintText("Waiting To Read", cords=(4, 8), FontSize=11)
   display.ShowImage()
         
 def displayRead():
   display.DrawRect()
-  display.PrintText("ID Read, Starting Timer", cords=(4, 8), FontSize=11)
+  display.PrintText("ID Read, Starting...", cords=(4, 8), FontSize=11)
   display.ShowImage()
 
 def displayTimer():
@@ -80,7 +87,6 @@ def displayTimer():
   display.ShowImage()
 
 def displayEnd():
-
   display.DrawRect()
   display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
   display.ShowImage()
