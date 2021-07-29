@@ -14,7 +14,7 @@ import Modules.display as display
 status = False
 display.waitingToRead()
 
-rfid = display()
+rfid = display.read_rfid()
 
 if __name__ == "__main__":
   # Startin the loop when program starts up
