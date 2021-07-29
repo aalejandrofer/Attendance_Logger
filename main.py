@@ -58,13 +58,10 @@ def check9hr():
     difference = int(now) - int(startTime)
 
     if difference >= 9:
-      endTimer(status=True)
+      endTimer()
 
 # Create a timer
-def startTimer(status):
-
-  if status == False:
-    display.displayRead()
+def startTimer():
 
   startResponse = logger.startLog()
 
@@ -88,7 +85,7 @@ def startTimer(status):
   display.displayTimer()
 
 # End the timer
-def endTimer(status):
+def endTimer():
   
   endResponse = logger.terminateLog()
 
@@ -109,6 +106,11 @@ def endTimer(status):
 
 if __name__ == "__main__":
 
+  #TODO add a display welcome screen
+
+  #Ready to read
+  display.waitingToRead()
+
   # Startin the loop when program starts up
   while True:
 
@@ -118,15 +120,15 @@ if __name__ == "__main__":
     isRead = checkRFData(data)
 
     if isRead:
-      startTimer(status)
+      startTimer()
 
     else:
-      endTimer(status)
+      endTimer()
     
     if status:
       hour9 = check9hr()
       if hour9:
-        endTimer(status)
+        endTimer()
 
 
 
