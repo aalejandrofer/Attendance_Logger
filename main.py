@@ -12,11 +12,13 @@ import Modules.display as display
 # False if start entry not entered
 # True if timer is running
 status = False
-display.waitingToRead()
 
 rfid = display.read_rfid()
 
 if __name__ == "__main__":
+
+  display.displayStart()
+  
   # Startin the loop when program starts up
   while True:
 
