@@ -43,7 +43,6 @@ def writeStatus(status):
 def checkRFData(data):
   if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
     display.createSound()
-    display.displayRead()
     return True
   else:
     return False
@@ -66,6 +65,7 @@ def startTimer():
 
   startResponse = logger.startLog()
   print("Starting Timer")
+  display.displayRead()
 
   writeStatus(True)
 
@@ -92,8 +92,6 @@ def endTimer():
   endResponse = logger.terminateLog()
   print("Ending Timer")
 
-  display.displayEnd()
-
   # Logging to txt file
   with open("RFID.log", "a") as f:
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
@@ -104,6 +102,8 @@ def endTimer():
     # Back to main stage
     writeStatus(False)
   
+    display.displayEnd()
+
     sleep(10)
     display.waitingToRead()
 
