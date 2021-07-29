@@ -56,9 +56,10 @@ if __name__ == "__main__":
   # Startin the loop when program starts up
   while True:
 
-    idRead = display.read_rfid()
+    data = display.read_rfid()
+    isRead = checkRFData(data)
 
-    if idRead:
+    if isRead:
 
       if status == False:
         display.displayRead()
@@ -66,7 +67,7 @@ if __name__ == "__main__":
         ids = logger.getIDs()
         startResponse = logger.startLog()
 
-        status = True
+        writeStatus(True)
 
         # Logging to txt file
         with open("RFID.log", "a") as f:
@@ -93,7 +94,7 @@ if __name__ == "__main__":
           f.close()
 
         # Back to main stage
-        status = False
+        writeStatus(False)
         sleep(10)
         display.waitingToRead()
 
