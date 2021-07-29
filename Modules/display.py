@@ -62,31 +62,31 @@ def createSound():
 
 def welcomeUser():
   display.DrawRect()
-  display.PrintText("Welcome!", cords=(5, 9), FontSize=13)
+  display.PrintText("Welcome!", cords=(5, 10), FontSize=13)
   display.ShowImage()
   sleep(2)
   display.DrawRect()
-  display.PrintText("Loading...", cords=(5, 9), FontSize=13)
+  display.PrintText("Loading...", cords=(5, 10), FontSize=13)
   display.ShowImage()
   sleep(1)
   waitingToRead()
 
 def waitingToRead():
   display.DrawRect()
-  display.PrintText("Waiting To Read", cords=(5, 9), FontSize=11)
+  display.PrintText("Waiting To Read", cords=(5, 10), FontSize=11)
   display.ShowImage()
         
 def displayRead():
   display.DrawRect()
-  display.PrintText("ID Read, Starting...", cords=(5, 9), FontSize=11)
+  display.PrintText("ID Read, Starting...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayTimer():
   display.DrawRect()
-  display.PrintText("Logged In, Counting", cords=(5, 9), FontSize=11)
+  display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayEnd():
   display.DrawRect()
-  display.PrintText("Done, Goodbye!", cords=(5, 9), FontSize=11)
+  display.PrintText("Done, Goodbye!", cords=(5, 10), FontSize=11)
   display.ShowImage()
