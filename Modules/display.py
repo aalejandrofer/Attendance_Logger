@@ -58,23 +58,23 @@ class read_rfid:
     return False
 
 def waitingToRead():
+  display.ShowImage()
   display.DrawRect()
   display.PrintText("Waiting To Read", FontSize=14)
-  display.ShowImage()
         
 def displayRead():
+  display.ShowImage()
   display.DrawRect()
   display.PrintText("ID Read, Starting Timer", cords=(4, 8), FontSize=11)
-  display.ShowImage()
 
 def displayTimer():
+  display.ShowImage()
   display.DrawRect()
   display.PrintText("Logged In, Counting", cords=(4, 8), FontSize=11)
-  display.ShowImage()
 
 def displayEnd():
+  display.ShowImage()
   display.DrawRect()
   display.PrintText("Goodbye, Timer Ended", cords=(4, 8), FontSize=11)
-  display.ShowImage()
 
 
