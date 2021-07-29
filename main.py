@@ -1,4 +1,3 @@
-from gitExample import read_rfid
 from time import sleep
 from datetime import datetime
 
@@ -15,7 +14,7 @@ import Modules.display as display
 status = False
 display.waitingToRead()
 
-rfid = read_rfid()
+rfid = display()
 
 if __name__ == "__main__":
   # Startin the loop when program starts up
