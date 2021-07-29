@@ -47,15 +47,13 @@ class read_rfid:
     ser = serial.Serial ("/dev/ttyS0")
     ser.baudrate = 9600
     data = ser.read(12)
+    if(data != " "):
+        GPIO.output(17,GPIO.HIGH)
+        sleep(.2)
+        GPIO.output(17,GPIO.LOW)
     ser.close ()
-
-    if data.__sizeof__ != 0:
-      GPIO.output(17,GPIO.HIGH)
-      sleep(.2)
-      GPIO.output(17,GPIO.LOW)
-      return True
-
-    return False
+    data=data.decode("utf-8")
+    return data
 
 def waitingToRead():
   display.DrawRect()

@@ -3,10 +3,9 @@ import requests
 import json
 from datetime import datetime, timedelta
 
-from requests.models import Response
-
 # Global Params
-with open("/home/pi/api_key.txt") as f:
+API_PATH = "./api_key.txt"
+with open(API_PATH) as f:
   API_KEY = f.readline().rstrip()
 
 CONTENT_TYPE = "application/json"

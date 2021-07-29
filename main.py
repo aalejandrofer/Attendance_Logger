@@ -11,18 +11,52 @@ import Modules.display as display
 
 # False if start entry not entered
 # True if timer is running
-status = False
+PATH = "./lastStatus.txt"
+def checkStatus():
+  try:
+    status = open(PATH, "r+").readline().rstrip()
+    if status != 'False' and status != 'True':
+      f = open(PATH, "w+")
+      f.write('False')
+      f.close()
+      status = open(PATH).readline().rstrip()
+  except:
+    f = open(PATH, "w+")
+    f.write("False")
+    f.close()
+    status = open(PATH).readline().rstrip()
+  
+  if status == 'True':
+    return True
+  else:
+    return False
 
-rfid = display.read_rfid()
+def writeStatus(status):
+  f = open(PATH, "w")
+  f.write(f"{status}")
+  f.close
+
+def checkRFData(data):
+  if data == ("02004819B2E1"):
+    return True
+  else:
+    print(data)
+    print(type(data))
+    return False
 
 if __name__ == "__main__":
 
-  display.waitingToRead()
+  status = checkStatus()
+
+  if status:
+    display.displayRead()
+  else:
+    display.waitingToRead()
 
   # Startin the loop when program starts up
   while True:
 
-    idRead = rfid.read_rfid()
+    idRead = display.read_rfid()
 
     if idRead:
 
