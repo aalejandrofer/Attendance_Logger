@@ -37,11 +37,9 @@ def writeStatus(status):
   f.close
 
 def checkRFData(data):
-  if data == ("02004819B2E1"):
-    print("Read and true")
+  if data == ("02004819B2E1"): #TODO add card ID
     return True
   else:
-    print("Read but False")
     return False
 
 if __name__ == "__main__":
@@ -68,6 +66,7 @@ if __name__ == "__main__":
         startResponse = logger.startLog()
 
         writeStatus(True)
+        status = checkStatus()
 
         # Logging to txt file
         with open("RFID.log", "a") as f:
@@ -95,6 +94,7 @@ if __name__ == "__main__":
 
         # Back to main stage
         writeStatus(False)
+        status = checkStatus()
         sleep(10)
         display.waitingToRead()
 
