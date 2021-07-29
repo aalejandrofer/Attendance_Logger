@@ -1,6 +1,10 @@
-from Modules.oled_091 import SSD1306
 from time import sleep
 from os import path
+
+try: 
+  from Modules.oled_091 import SSD1306
+except:
+  from oled_091 import SSD1306
 
 import serial
 import RPi.GPIO as GPIO
