@@ -1,5 +1,5 @@
 from time import sleep
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 
 # Modules
@@ -30,7 +30,7 @@ def checkStatus():
     status = open(PATH).readline().rstrip()
   
   if status == 'True':
-    display.displayTimer()
+    display.displayTimer(ROOT_DIR)
     return True
   else:
     display.waitingToRead()
@@ -54,12 +54,15 @@ def check9hr():
   PATH = os.path.join(ROOT_DIR, 'login.conf')
 
   with open(PATH, "r") as f:
-    now = datetime.now().strftime("%H")
-    startTime = f.readline().rstrip()
+    startTime = f.readline()
+    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
 
-    difference = int(now) - int(startTime)
+    timeToStop = startTime + timedelta(hours=9)
+    now = datetime.now()
 
-    if difference >= 9:
+    print(timeToStop)
+    print(now)
+    if timeToStop < now:
       endTimer()
 
 # Create a timer
@@ -86,7 +89,7 @@ def startTimer():
           
   # Reset
   sleep(10)
-  display.displayTimer()
+  display.displayTimer(ROOT_DIR)
 
 # End the timer
 def endTimer():
@@ -131,6 +134,7 @@ if __name__ == "__main__":
     
     if status:
       hour9 = check9hr()
+      display.timeCounting()
       if hour9:
         endTimer()
 

@@ -1,5 +1,7 @@
+import os
 from time import sleep
 from os import path
+from datetime import datetime
 
 try: 
   from Modules.oled_091 import SSD1306
@@ -81,9 +83,21 @@ def displayRead():
   display.PrintText("ID Read, Starting...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
-def displayTimer():
+def displayTimer(ROOTDIR):
   display.DrawRect()
   display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
+  display.ShowImage()
+  sleep(3)
+
+  PATH = os.path.join(ROOTDIR, 'login.conf')
+
+  with open(PATH, "r") as f:
+    startTime = f.readline()
+    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
+    startTime = datetime.strftime(startTime, "%H:%M")
+
+  display.DrawRect()
+  display.PrintText("Logged In, {startTime}", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayEnd():
