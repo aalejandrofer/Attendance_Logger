@@ -96,7 +96,7 @@ def displayTimer(ROOTDIR):
     startTime = datetime.strftime(startTime,"%H:%M")
 
   display.DrawRect()
-  display.PrintText(f"Logged In, :: {startTime}", cords=(5, 10), FontSize=11)
+  display.PrintText(f"Logged In, :: {startTime} ::", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayEnd():
