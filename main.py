@@ -78,7 +78,7 @@ def startTimer():
   # Logging Start time
   PATH = os.path.join(ROOT_DIR, 'login.conf')
   with open(PATH, "w+") as f:
-    now = datetime.now().strftime("%H")
+    now = datetime.now().strftime("%d-%m-%Y %H:%M")
     f.write(now)
     f.close()
 
