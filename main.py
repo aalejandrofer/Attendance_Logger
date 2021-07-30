@@ -63,6 +63,7 @@ def check9hr():
     print(timeToStop)
     print(now)
     if timeToStop < now:
+      print("Ended due to TimeLimit")
       endTimer()
 
 # Create a timer
