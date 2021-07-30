@@ -9,6 +9,8 @@ api_key.*
 test.py
 lastCheckIn.txt
 
+!login.conf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

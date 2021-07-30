@@ -71,7 +71,6 @@ def welcomeUser():
   display.PrintText("Loading...", cords=(5, 10), FontSize=13)
   display.ShowImage()
   sleep(1)
-  waitingToRead()
 
 def waitingToRead():
   display.DrawRect()
@@ -94,7 +93,7 @@ def displayTimer(ROOTDIR):
   with open(PATH, "r") as f:
     startTime = f.readline()
     startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
-    startTime = datetime.strftime(startTime, "%H:%M")
+    startTime = datetime.strftime(startTime,"%H:%M")
 
   display.DrawRect()
   display.PrintText("Logged In, {startTime}", cords=(5, 10), FontSize=11)
