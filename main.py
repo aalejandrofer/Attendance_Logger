@@ -12,31 +12,6 @@ import Modules.display as display
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# False if start entry not entered
-# True if timer is running
-def checkStatus():
-  PATH = os.path.join(ROOT_DIR, 'status.conf')
-  try:
-    status = open(PATH, "r+").readline().rstrip()
-    if status != 'False' and status != 'True':
-      f = open(PATH, "w+")
-      f.write('False')
-      f.close()
-      status = open(PATH).readline().rstrip()
-  except:
-    f = open(PATH, "w+")
-    f.write("False")
-    f.close()
-    status = open(PATH).readline().rstrip()
-
-  print(type(status))
-  print(status)
-  if status == "True":
-    return True
-
-  if status == "False":
-    return False
-
 def writeStatus(status):
   PATH = os.path.join(ROOT_DIR, 'status.conf')
   f = open(PATH, "w")
@@ -63,10 +38,8 @@ def check9hr():
 
     if timeToStop < now:
       print("Ended due to TimeLimit")
-      return True
-
-  return False
-
+      endTimer()
+      
 # Create a timer
 def startTimer():
 
@@ -110,6 +83,36 @@ def endTimer():
 
     sleep(5)
 
+# False if start entry not entered
+# True if timer is running
+def checkStatus():
+  PATH = os.path.join(ROOT_DIR, 'status.conf')
+
+  try:
+    status = open(PATH, "r+").readline().rstrip()
+    if status != 'False' and status != 'True':
+      f = open(PATH, "w+")
+      f.write('False')
+      f.close()
+      status = open(PATH).readline().rstrip()
+  except:
+    f = open(PATH, "w+")
+    f.write("False")
+    f.close()
+    status = open(PATH).readline().rstrip()
+
+  if status == "True":
+
+    display.displayTimer(ROOT_DIR)
+    check9hr()
+
+    return True
+
+  if status == "False":
+    display.waitingToRead()
+    return False
+
+
 if __name__ == "__main__":
 
   display.welcomeUser()
@@ -118,12 +121,11 @@ if __name__ == "__main__":
   # Startin the loop when program starts up
   while True:
 
-    print("hi")
+    status = checkStatus()
+
     data = display.read_rfid.read_rfid()
     
     isRead = checkRFData(data)
-
-    status = checkStatus()
 
     if isRead:
       if status == False:
@@ -131,15 +133,6 @@ if __name__ == "__main__":
 
       elif status == True:
         endTimer()
-
-    if status == True:
-      display.displayTimer(ROOT_DIR)
-      hour9 = check9hr()
-      if hour9:
-        endTimer()
-
-    else:
-      display.waitingToRead()
 
 
 
