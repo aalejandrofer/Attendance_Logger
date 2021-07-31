@@ -28,13 +28,6 @@ def checkStatus():
     f.write("False")
     f.close()
     status = open(PATH).readline().rstrip()
-  
-  if status == 'True':
-    display.displayTimer(ROOT_DIR)
-    return True
-  else:
-    display.waitingToRead()
-    return False
 
 def writeStatus(status):
   PATH = os.path.join(ROOT_DIR, 'status.conf')
@@ -44,6 +37,7 @@ def writeStatus(status):
 
 def checkRFData(data):
   if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
+    display.createSound()
     return True
   else:
     return False
@@ -69,9 +63,10 @@ def check9hr():
 def startTimer():
 
   startResponse = logger.startLog()
-  display.createSound()
+  
   print("Starting Timer")
   display.displayRead()
+  sleep(0.5)
 
   writeStatus(True)
 
@@ -90,15 +85,12 @@ def startTimer():
           
   # Reset
   sleep(5)
-  display.displayTimer(ROOT_DIR)
-  sleep(5)
-  display.timeCounting(ROOT_DIR)
 
 # End the timer
 def endTimer():
   
   endResponse = logger.terminateLog()
-  display.createSound()
+  
   print("Ending Timer")
 
   # Logging to txt file
@@ -138,7 +130,7 @@ if __name__ == "__main__":
     
     if status:
       hour9 = check9hr()
-      display.timeCounting(ROOT_DIR)
+      display.displayTimer(ROOT_DIR)
       if hour9:
         endTimer()
 

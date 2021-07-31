@@ -66,7 +66,7 @@ def welcomeUser():
   display.DrawRect()
   display.PrintText("Welcome!", cords=(5, 10), FontSize=13)
   display.ShowImage()
-  sleep(2)
+  sleep(1)
   display.DrawRect()
   display.PrintText("Loading...", cords=(5, 10), FontSize=13)
   display.ShowImage()
@@ -86,9 +86,8 @@ def displayTimer(ROOTDIR):
   display.DrawRect()
   display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
   display.ShowImage()
-  sleep(3)
-
-def timeCounting(ROOTDIR):
+  
+  sleep(2)
   PATH = os.path.join(ROOTDIR, 'login.conf')
 
   with open(PATH, "r") as f:
