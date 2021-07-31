@@ -66,7 +66,6 @@ def startTimer():
   
   print("Starting Timer")
   display.displayRead()
-  sleep(0.5)
 
   writeStatus(True)
 
@@ -90,7 +89,7 @@ def startTimer():
 def endTimer():
   
   endResponse = logger.terminateLog()
-  
+  display.displayEnd()
   print("Ending Timer")
 
   # Logging to txt file
@@ -100,13 +99,9 @@ def endTimer():
     f.write(f"{now} : {endResponse}\n")
     f.close()
 
-    # Back to main stage
     writeStatus(False)
-  
-    display.displayEnd()
 
-    sleep(10)
-    display.waitingToRead()
+    sleep(5)
 
 if __name__ == "__main__":
 
@@ -133,6 +128,8 @@ if __name__ == "__main__":
       display.displayTimer(ROOT_DIR)
       if hour9:
         endTimer()
+    elif status == False:
+      display.waitingToRead()
 
 
 
