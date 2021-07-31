@@ -119,6 +119,7 @@ if __name__ == "__main__":
   while True:
 
     data = display.read_rfid()
+    print("hi")
     isRead = checkRFData(data)
 
     status = checkStatus()
