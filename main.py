@@ -124,10 +124,12 @@ if __name__ == "__main__":
         endTimer()
     
     if status:
+      
       hour9 = check9hr()
       display.displayTimer(ROOT_DIR)
       if hour9:
         endTimer()
+
     elif status == False:
       display.waitingToRead()
 
