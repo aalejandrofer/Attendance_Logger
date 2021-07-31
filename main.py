@@ -1,6 +1,7 @@
 from time import sleep
 from datetime import date, datetime, timedelta
 import os
+from typing import type_check_only
 
 # Modules
 import Modules.logger as logger
@@ -127,7 +128,10 @@ if __name__ == "__main__":
       elif status == True:
         endTimer()
     
-    if status == True:
+    print(type(status))
+    print(status)
+
+    if status:
 
       hour9 = check9hr()
       display.displayTimer(ROOT_DIR)
@@ -135,7 +139,7 @@ if __name__ == "__main__":
       if hour9:
         endTimer()
 
-    elif status == False:
+    else:
       display.waitingToRead()
 
 
