@@ -111,6 +111,7 @@ if __name__ == "__main__":
 
   display.welcomeUser()
   sleep(0.5)
+  display.waitingToRead()
 
   # Startin the loop when program starts up
   while True:
