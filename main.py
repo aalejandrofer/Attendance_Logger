@@ -39,7 +39,7 @@ def check9hr():
     if timeToStop < now:
       print("Ended due to TimeLimit")
       endTimer()
-      
+
 # Create a timer
 def startTimer():
 
@@ -63,7 +63,7 @@ def startTimer():
     f.write(f"{now} : {startResponse}\n")
     f.close()
           
-  sleep(5)
+  sleep(2)
 
 # End the timer
 def endTimer():
@@ -81,7 +81,7 @@ def endTimer():
     f.write(f"{now} : {endResponse}\n")
     f.close()
 
-    sleep(5)
+    sleep(3)
 
 # False if start entry not entered
 # True if timer is running

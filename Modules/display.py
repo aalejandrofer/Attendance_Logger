@@ -71,7 +71,6 @@ def welcomeUser():
   display.DrawRect()
   display.PrintText("Loading...", cords=(5, 10), FontSize=13)
   display.ShowImage()
-  sleep(1)
 
 def waitingToRead():
   display.DrawRect()
