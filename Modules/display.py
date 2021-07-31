@@ -88,15 +88,16 @@ def displayTimer(ROOTDIR):
   display.ShowImage()
   sleep(3)
 
+def timeCounting(ROOTDIR):
   PATH = os.path.join(ROOTDIR, 'login.conf')
 
   with open(PATH, "r") as f:
-    startTime = f.readline()
+    startTime = f.readline().rstrip()
     startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
     startTime = datetime.strftime(startTime,"%H:%M")
 
   display.DrawRect()
-  display.PrintText(f"Logged In, :: {startTime} ::", cords=(5, 10), FontSize=11)
+  display.PrintText(f"Logged In, : {startTime} :", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayEnd():
