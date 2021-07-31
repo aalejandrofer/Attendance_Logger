@@ -48,13 +48,14 @@ DefaultFont = path.join(DIR_PATH, "Fonts/GothamLight.ttf")
 
 display = SSD1306()
 
-def read_rfid():
-  ser = serial.Serial ("/dev/ttyS0")
-  ser.baudrate = 9600
-  data = ser.read(12)
-  ser.close ()
-  data=data.decode("utf-8")
-  return data
+class read_rfid():
+  def read_rfid():
+    ser = serial.Serial ("/dev/ttyS0")
+    ser.baudrate = 9600
+    data = ser.read(12)
+    ser.close ()
+    data=data.decode("utf-8")
+    return data
 
 #Plays read sound
 def createSound():
