@@ -29,6 +29,11 @@ def checkStatus():
     f.close()
     status = open(PATH).readline().rstrip()
 
+  if status == "True":
+    return True
+  else:
+    return False
+
 def writeStatus(status):
   PATH = os.path.join(ROOT_DIR, 'status.conf')
   f = open(PATH, "w")
@@ -53,11 +58,11 @@ def check9hr():
     timeToStop = startTime + timedelta(hours=9)
     now = datetime.now()
 
-    print(timeToStop)
-    print(now)
     if timeToStop < now:
       print("Ended due to TimeLimit")
       return True
+
+  return False
 
 # Create a timer
 def startTimer():
@@ -82,7 +87,6 @@ def startTimer():
     f.write(f"{now} : {startResponse}\n")
     f.close()
           
-  # Reset
   sleep(5)
 
 # End the timer
@@ -92,14 +96,14 @@ def endTimer():
   display.displayEnd()
   print("Ending Timer")
 
+  writeStatus(False)
+
   # Logging to txt file
   with open("RFID.log", "a") as f:
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
     #f.write(f"{now} : {startResponse}\n")
     f.write(f"{now} : {endResponse}\n")
     f.close()
-
-    writeStatus(False)
 
     sleep(5)
 
@@ -123,10 +127,11 @@ if __name__ == "__main__":
       elif status == True:
         endTimer()
     
-    if status:
-      
+    if status == True:
+
       hour9 = check9hr()
       display.displayTimer(ROOT_DIR)
+
       if hour9:
         endTimer()
 
