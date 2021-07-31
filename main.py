@@ -29,9 +29,12 @@ def checkStatus():
     f.close()
     status = open(PATH).readline().rstrip()
 
+  print(type(status))
+  print(status)
   if status == "True":
     return True
-  else:
+
+  if status == "False":
     return False
 
 def writeStatus(status):
@@ -111,15 +114,15 @@ if __name__ == "__main__":
 
   display.welcomeUser()
   sleep(0.5)
-  display.waitingToRead()
+  status = checkStatus()
 
   # Startin the loop when program starts up
   while True:
 
-    status = checkStatus()
-
     data = display.read_rfid()
     isRead = checkRFData(data)
+
+    status = checkStatus()
 
     if isRead:
       if status == False:
@@ -127,15 +130,10 @@ if __name__ == "__main__":
 
       elif status == True:
         endTimer()
-    
-    print(type(status))
-    print(status)
 
-    if status:
-
-      hour9 = check9hr()
+    if status == True:
       display.displayTimer(ROOT_DIR)
-
+      hour9 = check9hr()
       if hour9:
         endTimer()
 
