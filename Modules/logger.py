@@ -80,8 +80,18 @@ def startEntry(time, nameOfDay):
 
   now = datetime.now()
   formatNow = now.strftime("%H:%M:%S")
+  day = datetime.now().day
 
-  description = f"{nameOfDay} {formatNow}"
+  if day == 1 or day == 21 or day == 31:
+    day = f"{day}st"
+  elif day == 2 or day == 22:
+    day = f"{day}nd"
+  elif day == 3 or day == 23:
+    day = f"{day}rd"
+  else:
+    day = f"{day}"
+
+  description = f"{nameOfDay} {day} at {formatNow}"
 
   body = {
     "start":time,
