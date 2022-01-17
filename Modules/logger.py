@@ -67,10 +67,8 @@ def getIDs():
 def getTime():
   
   #2021-07-27T08:00:00Z
-  # The API for some reason takes an hour away
-  # I think is due to TimeZone Location
-  nowSub = datetime.now() - timedelta(hours=1)
-  format_time = nowSub.strftime(f"%Y-%m-%dT%H:%M:%SZ")
+  now = datetime.now()
+  format_time = now.strftime(f"%Y-%m-%dT%H:%M:%SZ")
   
   nameOfDay = datetime.now().strftime('%A')
   

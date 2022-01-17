@@ -88,7 +88,7 @@ def displayTimer(ROOTDIR):
   display.ShowImage()
   
   sleep(2)
-  PATH = os.path.join(ROOTDIR, 'login.conf')
+  PATH = ROOTDIR + "/login.conf"
 
   with open(PATH, "r") as f:
     startTime = f.readline().rstrip()

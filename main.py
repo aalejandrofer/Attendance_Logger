@@ -13,10 +13,9 @@ import Modules.display as display
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def writeStatus(status):
-  PATH = os.path.join(ROOT_DIR, 'status.conf')
-  f = open(PATH, "w")
-  f.write(f"{status}")
-  f.close
+  PATH = ROOT_DIR + "/status.conf"
+  with open(PATH, "w") as f:
+    f.write(f"{status}")
 
 def checkRFData(data):
   if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
@@ -27,7 +26,7 @@ def checkRFData(data):
 
 #Incase user forgets to logout
 def check9hr():
-  PATH = os.path.join(ROOT_DIR, 'login.conf')
+  PATH = ROOT_DIR + "/login.conf"
 
   with open(PATH, "r") as f:
     startTime = f.readline()
@@ -51,17 +50,10 @@ def startTimer():
   writeStatus(True)
 
   # Logging Start time
-  PATH = os.path.join(ROOT_DIR, 'login.conf')
-  with open(PATH, "w+") as f:
+  PATH = ROOT_DIR + "/login.conf"
+  with open(PATH, "w") as f:
     now = datetime.now().strftime("%d-%m-%Y %H:%M")
     f.write(now)
-    f.close()
-
-  # Logging to txt file
-  with open("RFID.log", "a") as f:
-    now = datetime.now().strftime("%d-%m-%Y %H:%M")
-    f.write(f"{now} : {startResponse}\n")
-    f.close()
           
   sleep(2)
 
@@ -74,44 +66,28 @@ def endTimer():
 
   writeStatus(False)
 
-  # Logging to txt file
-  with open("RFID.log", "a") as f:
-    now = datetime.now().strftime("%d-%m-%Y %H:%M")
-    #f.write(f"{now} : {startResponse}\n")
-    f.write(f"{now} : {endResponse}\n")
-    f.close()
+  sleep(3)
 
-    sleep(3)
-
-# False if start entry not entered
+# False if timer not running
 # True if timer is running
 def checkStatus():
-  PATH = os.path.join(ROOT_DIR, 'status.conf')
+  PATH = ROOT_DIR + "/status.conf"
 
-  try:
-    status = open(PATH, "r+").readline().rstrip()
-    if status != 'False' and status != 'True':
-      f = open(PATH, "w+")
-      f.write('False')
-      f.close()
-      status = open(PATH).readline().rstrip()
-  except:
-    f = open(PATH, "w+")
-    f.write("False")
-    f.close()
-    status = open(PATH).readline().rstrip()
+  with open(PATH, "r") as f:
+    status = f.readline().rstrip()
 
-  if status == "True":
+    if status == "True":
+      display.displayTimer(ROOT_DIR)
+      #check9hr()
+      return True
 
-    display.displayTimer(ROOT_DIR)
-    check9hr()
-
-    return True
-
-  if status == "False":
-    display.waitingToRead()
-    return False
-
+    if status == "False":
+      display.waitingToRead()
+      return False
+    
+    else:
+      writeStatus(False)
+      return False
 
 if __name__ == "__main__":
 
@@ -122,10 +98,12 @@ if __name__ == "__main__":
   while True:
 
     status = checkStatus()
+    print(f"{status}")
 
     data = display.read_rfid.read_rfid()
     
     isRead = checkRFData(data)
+    print(f"{data} + {isRead}")
 
     if isRead:
       if status == False:
