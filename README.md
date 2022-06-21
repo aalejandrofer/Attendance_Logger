@@ -1,4 +1,4 @@
-# Attendance_Logger
+# Attendance_Logger v1 (Using Clockify)
 
 Simple and Quick project, using these products:
 - Raspberry Pi 4 Model B 2Gb
