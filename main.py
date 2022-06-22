@@ -44,7 +44,8 @@ if __name__ == "__main__":
     
     # Do the rest
     
-    logger.logger().start()
+    t = logger.logger().readTimeEntry()
+    print(t)
 
     #sleep(5) # Wait until it reads from database again
 
