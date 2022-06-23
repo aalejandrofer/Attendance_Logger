@@ -1,6 +1,6 @@
 
 import Modules.redisDB.redisDB as redisDB
-from datetime import date, datetime
+from datetime import datetime
 import json
 
 class logger():
@@ -13,15 +13,21 @@ class logger():
     todayKey = self.todayKey()
     
     # Data
-    data = {"start":"", "end":"", "status":1} # status 1 as is not completed only start time added
+    starTime = self.createTimestamp(datetime.now())
+    data = {"start":starTime, "end":0, "status":1} # status 1 as is not completed only start time added
     
     # Write to database
     self.r.write("json", "entries", todayKey, data)
-    
-    return
   
   def endTimer(self, streamTime:dict):
-    return
+    todayKey = self.todayKey()
+    
+    # Data
+    endTime = self.createTimestamp(datetime.now())
+    data = {"start":streamTime[todayKey]["start"] ,"end":endTime, "status":0} # status 0 as is completed
+
+    # Writes JSON to Redis database
+    self.r.write("json", "entries", todayKey, data)
   
   # Creates a key in the format of %y %m %d (220623) from todays date
   def todayKey(self) -> str:    
@@ -30,6 +36,10 @@ class logger():
   # Create a timestampt from given date
   def createTimestamp(self, date:datetime) -> int:
     return int(round(date.timestamp()))
+
+  # From timestamp to date
+  def dateFromTimestamp(self, timestamp:int) -> datetime:
+    return datetime.fromtimestamp(timestamp)
 
   # Reads JSON frmo Redis database
   def readTimeEntry(self):

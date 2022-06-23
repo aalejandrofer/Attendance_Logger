@@ -1,4 +1,4 @@
-from typing import Any
+from re import T
 import redis
 
 class redisDB():
@@ -19,8 +19,8 @@ class redisDB():
     # # redisDB.redisDB().write("hash", "config", "lastStatus", 2)
     def write(self, type:str, key:str, position:str, data):
         if type == "hash":
-            self.r.hset(key, position, data)
-            return 0
+            a = self.r.hset(key, position, data)
+            return a
         if type == "json":
-            self.r.json().set(key, position, data)
-            return 0
+            a = self.r.json().set(key, position, data, nx=False, xx=False) ## nx=False, xx=False allowing overwriting
+            return a

@@ -53,7 +53,7 @@ if __name__ == "__main__":
       # # 1 = Day is not Done
       # # 2 = Some Error
       
-      e = logger.logger().startTimer(streamTime)
+      e = logger.logger().endTimer(streamTime)
        
       if lastStatus == 0:
         # Start a new timer (start)
