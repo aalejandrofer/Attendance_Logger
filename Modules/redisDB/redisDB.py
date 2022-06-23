@@ -1,13 +1,11 @@
-import redis as redisDB
+import redis
 
-class redis():
+class redisDB():
     def __init__(self):
-        self.r = redisDB.StrictRedis(host='localhost', port=6379, db=0, password='potato')
+        self.r = redis.StrictRedis(host='localhost', port=6379, db=0, password='potato', decode_responses=True)
     
     def read(self, type:str, key:str):
         if type == "hash":
             return self.r.hgetall(key)
-        if type == "string":
-            return self.r.get(key)
         if type == "json":
-            return None #TODO cant get it to read
+            return self.r.json().get(key) 

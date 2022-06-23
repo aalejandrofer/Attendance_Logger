@@ -1,4 +1,6 @@
+from telnetlib import STATUS
 from time import sleep
+import datetime
 
 # Modules
 import Modules.logger as logger
@@ -17,12 +19,6 @@ def checkRFData(data):
   else:
     return False
 
-# In case of restart or power loss or wrong read, save current status
-def checkStatus():
-  # Status written on database
-  lastStatus = redisDB.redis().read("hash", "config")
-  return lastStatus[b'lastStatus']
-
 if __name__ == "__main__":
 
   #display.welcomeUser() #TODO only be run while connected to the PI
@@ -33,12 +29,12 @@ if __name__ == "__main__":
 
     #display.waitingToRead()
 
-    lastStatus = checkStatus()
+    time, lastStatus = logger.logger().readTimeEntry()
 
-    if lastStatus == b"Running":
-      x = redisDB.redis().read("hash", "config")
-      print(x[b'lastStart'])
-      #display.displayTimer(x[b'lastStart']) #TODO only be run while connected to the PI
+    if lastStatus == 1:
+      x = redisDB.redisDB().read("hash", "config")
+      print("Running")
+      #display.displayTimer(x[b"lastStart"]) #TODO only be run while connected to the PI
     
     #data = display.read_rfid.read_rfid() #TODO only be run while connected to the PI
     
@@ -50,25 +46,22 @@ if __name__ == "__main__":
     if isRead:
       
       #display.displayRead()
-      
-      t = logger.logger().readTimeEntry() # Represents the Last 2 time entries # If status True, then the last 2 entries match start and end
 
-      # if t["status"]:
-      #   # Starting a new Day : Start New Day
-      #   print("Day Completed")
-      #   # Start Timer - create new start entry and set lastStatus to Running
-      #   exit(0)
-      
-      # else:
-      #   # Current Day is Running : End Day
-      #   print("Day Running")
-      #   # End Timer - create new end entry and set lastStatus to NotRunning
-      #   exit(1)
+      streamTime, lastStatus = logger.logger().readTimeEntry() # Represents the Last 2 time entries # If status True, then the last 2 entries match start and end
 
-    else:
-      # incorrect read
-      print("error reading, device not registered") #TODO implement simple logging system
-      #display.displayWronRead()
+      # Create Tasks based on lastStatus
+      # # 0 = Day is Done
+      # # 1 = Day is not Done
+      # # 2 = Error
+
+      if lastStatus == 0:
+        continue
+      elif lastStatus == 1:
+        continue
+      elif lastStatus == 2:
+        continue
+
+      break #TODO dev only
     
     sleep(3) # Wait until it reads from device again
     
