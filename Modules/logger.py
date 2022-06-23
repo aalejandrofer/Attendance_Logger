@@ -1,6 +1,6 @@
 
 import Modules.redisDB.redisDB as redisDB
-import datetime
+from datetime import date, datetime
 import json
 
 class logger():
@@ -10,17 +10,27 @@ class logger():
     self.r = redisDB.redisDB()
 
   def startTimer(self, streamTime:dict):
+    key = self.todayKey()
+    
     return
   
   def endTimer(self, streamTime:dict):
     return
   
+  # Creates a key in the format of %y %m %d (220623) from todays date
+  def todayKey(self) -> str:    
+    return datetime.now().strftime("%y%m%d")
+  
+  # Create a timestampt from given date
+  def createTimestamp(self, date:datetime) -> int:
+    return int(round(date.timestamp()))
+
+  # Reads JSON frmo Redis database
   def readTimeEntry(self):
     stream = self.r.read("json", "entries")
-    print(stream)
 
     # Grabbing the last date entry
-    dicLen = len(stream) - 2
+    dicLen = len(stream) - 3 # TODO Template Data grabbing status 1
     lastDate = list(stream.keys())[dicLen] # Grabs the last date
     status = stream[lastDate]["status"]
 
@@ -30,9 +40,5 @@ class logger():
     # # 2 = Error e.g Time entry exceeds max hours
 
     return stream, status
-
-  
-  
-  
   
   

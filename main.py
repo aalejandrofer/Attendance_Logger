@@ -1,6 +1,5 @@
-from telnetlib import STATUS
 from time import sleep
-import datetime
+from datetime import datetime
 
 # Modules
 import Modules.logger as logger
@@ -29,11 +28,11 @@ if __name__ == "__main__":
 
     #display.waitingToRead()
 
-    time, lastStatus = logger.logger().readTimeEntry()
+    streamTime, lastStatus = logger.logger().readTimeEntry()
+    print(streamTime)
 
     if lastStatus == 1:
-      x = redisDB.redisDB().read("hash", "config")
-      print("Running")
+      print("")
       #display.displayTimer(x[b"lastStart"]) #TODO only be run while connected to the PI
     
     #data = display.read_rfid.read_rfid() #TODO only be run while connected to the PI
@@ -52,16 +51,21 @@ if __name__ == "__main__":
       # Create Tasks based on lastStatus
       # # 0 = Day is Done
       # # 1 = Day is not Done
-      # # 2 = Error
-
+      # # 2 = Some Error
+      
+      e = logger.logger().startTimer(streamTime)
+       
       if lastStatus == 0:
-        continue
+        # Start a new timer (start)
+        break
       elif lastStatus == 1:
-        continue
+        # End timer (end)
+        break
       elif lastStatus == 2:
-        continue
-
-      break #TODO dev only
+        # Some error
+        break
+        
+     
     
     sleep(3) # Wait until it reads from device again
     
