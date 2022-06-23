@@ -10,7 +10,13 @@ class logger():
     self.r = redisDB.redisDB()
 
   def startTimer(self, streamTime:dict):
-    key = self.todayKey()
+    todayKey = self.todayKey()
+    
+    # Data
+    data = {"start":"", "end":"", "status":1} # status 1 as is not completed only start time added
+    
+    # Write to database
+    self.r.write("json", "entries", todayKey, data)
     
     return
   
