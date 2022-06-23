@@ -9,5 +9,5 @@ class redis():
             return self.r.hgetall(key)
         if type == "string":
             return self.r.get(key)
-        if type == "stream":
-            return self.r.xrange(key, 0, '+', 100)
+        if type == "json":
+            return None #TODO cant get it to read
