@@ -7,7 +7,7 @@ import os
 # Modules
 import Modules.logger as logger
 import Modules.display as display
-from main import main
+import main
 
 # Coded in Python 3.8
 # Install Pip3 to get the requests dependancy
@@ -84,7 +84,7 @@ def checkTimeJob():
   if s:
     endTimer()
     response = logger.updateEntryOnLimit()
-    main.main()
+    main.mainStart()
 
 # Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
