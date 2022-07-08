@@ -34,6 +34,8 @@ if __name__ == "__main__":
     isRead = lT.checkRFData(data)
     print(f"{data} + {isRead}\n")
 
+    lT.checkStatus()
+
     if isRead:
       if status == False:
         print("Starting Timer")
