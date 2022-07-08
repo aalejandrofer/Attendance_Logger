@@ -106,38 +106,8 @@ if __name__ == "__main__":
     print(f"{data} + {isRead}")
 
     if isRead:
-<<<<<<< HEAD
       if status == False:
         startTimer()
-=======
-      
-      #display.displayRead()
-
-      streamTime, lastStatus = logger.logger().readTimeEntry() # Represents the Last 2 time entries # If status True, then the last 2 entries match start and end
-
-      # Create Tasks based on lastStatus
-      # # 0 = Day is Done
-      # # 1 = Day is not Done
-      # # 2 = Some Error
-      
-      e = logger.logger().endTimer(streamTime)
-       
-      if lastStatus == 0:
-        # Start a new timer (start)
-        break
-      elif lastStatus == 1:
-        # End timer (end)
-        break
-      elif lastStatus == 2:
-        # Some error
-        break
-        
-     
-    
-    sleep(3) # Wait until it reads from device again
-    
-    
->>>>>>> e0014044cb5194aa2699cf4a1823661d848339ce
 
       elif status == True:
         endTimer()
