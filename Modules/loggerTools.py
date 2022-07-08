@@ -11,7 +11,7 @@ import main
 
 # Coded in Python 3.8
 # Install Pip3 to get the requests dependancy
-# Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
+# Example: sudo apt-get -y install python3-pip python3 && pip3 install requests.
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +21,7 @@ def writeStatus(status):
     f.write(f"{status}")
 
 def checkRFData(data):
-  if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID.
+  if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
     display.createSound()
     return True
   else:
