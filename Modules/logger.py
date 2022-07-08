@@ -1,3 +1,4 @@
+from pydoc import describe
 import requests
 import json
 from datetime import datetime, timedelta
@@ -21,6 +22,7 @@ workspace_id = ''
 project_id = ''
 task_id = ''
 task_name = ''
+entry_id = ''
 
 ## Converting json object to redeable format
 def jprint(obj):
@@ -73,7 +75,7 @@ def getTime():
 
 # Creating a new time entry
 def startEntry(time, nameOfDay):
-  global body
+  global body, entry_id
 
   now = datetime.now()
   formatNow = now.strftime("%H:%M:%S")
@@ -92,26 +94,40 @@ def startEntry(time, nameOfDay):
 
   body = {
     "start":time,
-    "billable":"false",
+    "billable":"true",
     "description":description,
     "projectId":project_id,
     "taskId":task_id
   }
 
   response = requests.post(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries', data=json.dumps(body), headers=headers)
+  
+  entry_id = response['id']
+  
   return response
+
+def updateEntry():
+  global body
+  
+  body['description'] = body['description'] + ' // Limit Reached!'
+  
+  # https://api.clockify.me/api/v1/workspaces/{{workspaceID}}/time-entries/{{testEntryID}}
+  response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{id}", data=body, headers=headers)
+  return
 
 # Ending the time entry
 def endEntry(time):
+  global body, entry_id
 
-  global body
-
-  body = {
+  localBody = {
     "end":time,
-    "description": "Timer Stopped By Limit"
   }
 
-  response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(body), headers=headers)
+  response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(localBody), headers=headers)
+
+  body["end"] = time
+  entry_id = response['id']
+  
   return response
 
 # Starts the entry logger
