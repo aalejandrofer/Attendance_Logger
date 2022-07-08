@@ -9,7 +9,7 @@ import Modules.loggerTools as lT
 # Install Pip3 to get the requests dependancy
 # Example: sudo apt-get -y install python3-pip python3 && pip3 install requests apscheduler
 
-if __name__ == "__main__":
+def main():
 
   display.welcomeUser()
   sleep(0.5)
@@ -38,6 +38,7 @@ if __name__ == "__main__":
       elif status == True:
         lT.endTimer()
 
+main()
 
 
 
