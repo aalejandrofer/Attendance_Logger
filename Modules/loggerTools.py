@@ -32,7 +32,6 @@ def checkRFData(data):
 def startTimer():
 
   startResponse = logger.startLog()
-  
   print("Starting Timer")
   display.displayRead()
 
@@ -50,8 +49,8 @@ def startTimer():
 def endTimer():
   
   endResponse = logger.terminateLog()
-  display.displayEnd()
   print("Ending Timer")
+  display.displayEnd()
 
   writeStatus(False)
 
@@ -80,13 +79,13 @@ def checkStatus():
     
 # Start the scheduler
 def checkTimeJob():
-  print("Checking If Timer Is Running ...")
+  print("Checking If Timer Is Running ...\n")
   s = checkStatus()
   if s:
     logger.terminateLog()
     logger.updateEntryOnLimit()
     
-    print("Ending Time Due to Time Limit")
+    print("Ending Time Due to Time Limit\n")
 
     writeStatus(False)
     
@@ -95,8 +94,8 @@ def checkTimeJob():
 # Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
   scheduler = Scheduler(timezone="Europe/London")
-  #scheduler.add_job(checkTimeJob, 'cron', hour="20", id="timeLimitJob")
-  scheduler.add_job(checkTimeJob, 'interval', seconds=40) # Testing purposes
+  scheduler.add_job(checkTimeJob, 'cron', hour="20", id="timeLimitJob")
+  #scheduler.add_job(checkTimeJob, 'interval', seconds=40) # Testing purposes
   scheduler.start()
 
 # Ensures status & config files are at least present (run once at startup).

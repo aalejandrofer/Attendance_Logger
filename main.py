@@ -15,6 +15,8 @@ if __name__ == "__main__":
 
   display.welcomeUser()
   sleep(0.5)
+
+  print("Startng Up ...\n")
   
   # Background Task to Check if Timer Still Running After Working Hours
   ## If Timer running after 8pm, it will stop the timer
@@ -25,24 +27,25 @@ if __name__ == "__main__":
   # Startin the loop when program starts up
   while True:
 
+    # Status: 
+    # - True: Timer Runnning
+    # - False: Timer Not Running
+
     status = lT.checkStatus()
-    print("Status: True(Running) False(Timer Not Running)")
     print(f"Waiting to Read : Current Status {status}\n")
 
     data = display.read_rfid.read_rfid()
     
     isRead = lT.checkRFData(data)
-    print(f"{data} + {isRead}\n")
+    print(f"ID: {data} Read\n")
 
     status = lT.checkStatus()
 
     if isRead:
       if status == False:
-        print("Starting Timer")
         lT.startTimer()
 
       elif status == True:
-        print("Ending Timer")
         lT.endTimer()
 
 
