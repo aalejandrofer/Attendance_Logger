@@ -13,7 +13,7 @@ import Modules.timeLimitCheck as checkLimit
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-checkLimit() # Background check for time
+checkLimit.start() # Background check for time
 
 def writeStatus(status):
   PATH = ROOT_DIR + "/status.conf"
