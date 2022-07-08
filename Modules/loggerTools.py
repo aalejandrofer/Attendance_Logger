@@ -84,7 +84,6 @@ def checkTimeJob():
   if s:
     endTimer()
     response = logger.updateEntryOnLimit()
-    main.mainStart()
 
 # Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
