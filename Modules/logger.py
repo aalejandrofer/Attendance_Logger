@@ -107,7 +107,15 @@ def startEntry(time, nameOfDay):
 def updateEntryOnLimit():
   global body
   
-  body['description'] = body['description'] + ' // Limit Reached!'
+  body = {
+    "start":"08-07-2022 04:23",
+    "billable":"true",
+    "description":"lol",
+    "projectId":project_id,
+    "taskId":task_id
+  }
+  
+  body['description'] = body["description"] + ' // Limit Reached!'
   
   # https://api.clockify.me/api/v1/workspaces/{{workspaceID}}/time-entries/{{testEntryID}}
   response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{id}", data=body, headers=headers)
