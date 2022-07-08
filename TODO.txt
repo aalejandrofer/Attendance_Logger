@@ -1,2 +1,0 @@
-1. Implement a method that will check if user forgets to sign in or sign out and fix the problem
-  Noting in the user interface that such time entry requires human to fix it

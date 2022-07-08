@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from os import path
 from datetime import datetime
@@ -81,13 +82,18 @@ def displayRead():
   display.PrintText("ID Read, Starting...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
-# Where startime is in H:M format (e.g. 08:00)
-def displayTimer(startTime:str):
+def displayTimer(ROOTDIR):
   display.DrawRect()
-  display.PrintText("Logged In, Starting Timer", cords=(5, 10), FontSize=11)
+  display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
   display.ShowImage()
   
   sleep(2)
+  PATH = ROOTDIR + "/login.conf"
+
+  with open(PATH, "r") as f:
+    startTime = f.readline().rstrip()
+    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
+    startTime = datetime.strftime(startTime,"%H:%M")
 
   display.DrawRect()
   display.PrintText(f"Logged In, : {startTime} :", cords=(5, 10), FontSize=11)
@@ -96,9 +102,4 @@ def displayTimer(startTime:str):
 def displayEnd():
   display.DrawRect()
   display.PrintText("Done, Goodbye!", cords=(5, 10), FontSize=11)
-  display.ShowImage()
-
-def displayWronRead():
-  display.DrawRect()
-  display.PrintText("Wrong Read ... Restarting", cords=(5, 10), FontSize=11)
   display.ShowImage()
