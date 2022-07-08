@@ -75,7 +75,7 @@ def getTime():
 
 # Creating a new time entry
 def startEntry(time, nameOfDay):
-  global body, entry_id
+  global body
 
   now = datetime.now()
   formatNow = now.strftime("%H:%M:%S")
@@ -102,8 +102,6 @@ def startEntry(time, nameOfDay):
 
   response = requests.post(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries', data=json.dumps(body), headers=headers)
   
-  entry_id = response['id']
-  
   return response
 
 def updateEntryOnLimit():
@@ -125,6 +123,7 @@ def endEntry(time):
 
   response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(localBody), headers=headers)
 
+  response = response.json()
   body["end"] = time
   entry_id = response['id']
   
