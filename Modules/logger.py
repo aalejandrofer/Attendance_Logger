@@ -1,7 +1,7 @@
 from pydoc import describe
 import requests
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 
 # Global Params
@@ -107,26 +107,9 @@ def startEntry(time, nameOfDay):
 def updateEntryOnLimit():
   global body
   
-  body = {
-    "start":"2022-07-07T14:00:37Z",
-    "billable":"true",
-    "description":"lol",
-    "projectId":project_id,
-    "taskId":task_id,
-    "end":body["end"]
-  }
-  
   body['description'] = body["description"] + ' // Limit Reached!'
   
-  print(body)
-  
-  print(entry_id)
-  
-  # https://api.clockify.me/api/v1/workspaces/{{workspaceID}}/time-entries/{{testEntryID}}
   response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{entry_id}", data=json.dumps(body), headers=headers)
-  print(response)
-  print(response.json())
-  print(workspace_id)
   
   return response
 
@@ -144,8 +127,6 @@ def endEntry(time):
   body["end"] = time
   
   entry_id = response['id']
-  
-  print(entry_id)
   
   return response
 
