@@ -1,5 +1,7 @@
 from time import sleep
-from datetime import date, datetime, timedelta
+from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler as Scheduler
+
 import os
 
 # Modules
@@ -72,3 +74,15 @@ def checkStatus():
     else:
       writeStatus(False)
       return False
+    
+    
+# Start the scheduler
+def checkTimeJob():
+    s = checkStatus()
+    if s:
+      endTimer()
+
+def createSchedulerForTimeLimit():
+    scheduler = Scheduler()
+    scheduler.add_job(checkTimeJob, 'interval', seconds=10, id="timeLimitJob")
+    scheduler.start()

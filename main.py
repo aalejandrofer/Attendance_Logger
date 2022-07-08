@@ -1,8 +1,8 @@
+from operator import lt
 from time import sleep
 
 # Modules
 import Modules.display as display
-import Modules.timeLimitCheck as checkLimit
 import Modules.loggerTools as lT
 
 # Coded in Python 3.8
@@ -16,7 +16,7 @@ if __name__ == "__main__":
   
   # Background Task to Check if Timer Still Running After Working Hours
   ## If Timer running after 8pm, it will stop the timer
-  checkLimit.start()
+  lT.createSchedulerForTimeLimit()
 
   # Startin the loop when program starts up
   while True:
