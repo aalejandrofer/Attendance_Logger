@@ -87,8 +87,8 @@ def checkTimeJob():
 # Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
   scheduler = Scheduler(timezone="Europe/London")
-  #scheduler.add_job(checkTimeJob, 'cron', hour="20", id="timeLimitJob")
-  scheduler.add_job(checkTimeJob, 'interval', seconds=20) # Testing purposes
+  scheduler.add_job(checkTimeJob, 'cron', hour="20", id="timeLimitJob")
+  #scheduler.add_job(checkTimeJob, 'interval', seconds=20) # Testing purposes
   scheduler.start()
 
 # Ensures status & config files are at least present (run once at startup)
