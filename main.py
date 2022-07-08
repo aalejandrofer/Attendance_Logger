@@ -26,18 +26,21 @@ if __name__ == "__main__":
   while True:
 
     status = lT.checkStatus()
-    print(f"{status}")
+    print("Status: True(Running) False(Timer Not Running)")
+    print(f"Waiting to Read : Current Status {status}\n")
 
     data = display.read_rfid.read_rfid()
     
     isRead = lT.checkRFData(data)
-    print(f"{data} + {isRead}")
+    print(f"{data} + {isRead}\n")
 
     if isRead:
       if status == False:
+        print("Starting Timer")
         lT.startTimer()
 
       elif status == True:
+        print("Ending Timer")
         lT.endTimer()
 
 
