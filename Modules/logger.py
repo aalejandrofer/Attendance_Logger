@@ -108,7 +108,7 @@ def updateEntryOnLimit():
   global body
   
   body = {
-    "start":"2022-07-08T14:00:37Z",
+    "start":"2022-07-07T14:00:37Z",
     "billable":"true",
     "description":"lol",
     "projectId":project_id,
