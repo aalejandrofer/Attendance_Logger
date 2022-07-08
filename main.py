@@ -1,3 +1,5 @@
+#!/usr/bin/pytho3
+
 from operator import lt
 from time import sleep
 
