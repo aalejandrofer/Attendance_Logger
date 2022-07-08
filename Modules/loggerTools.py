@@ -51,7 +51,7 @@ def endTimer():
   display.displayEnd()
   print("Ending Timer")
 
-  #writeStatus(False) #TODO remove comment
+  writeStatus(False)
 
   sleep(3)
 
