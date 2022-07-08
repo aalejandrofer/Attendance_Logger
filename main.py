@@ -5,12 +5,15 @@ import os
 # Modules
 import Modules.logger as logger
 import Modules.display as display
+import Modules.timeLimitCheck as checkLimit
 
 # Coded in Python 3.8
 # Install Pip3 to get the requests dependancy
 # Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+checkLimit() # Background check for time
 
 def writeStatus(status):
   PATH = ROOT_DIR + "/status.conf"
@@ -23,21 +26,6 @@ def checkRFData(data):
     return True
   else:
     return False
-
-#Incase user forgets to logout
-def check9hr():
-  PATH = ROOT_DIR + "/login.conf"
-
-  with open(PATH, "r") as f:
-    startTime = f.readline()
-    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
-
-    timeToStop = startTime + timedelta(hours=9)
-    now = datetime.now()
-
-    if timeToStop < now:
-      print("Ended due to TimeLimit")
-      endTimer()
 
 # Create a timer
 def startTimer():
@@ -78,7 +66,6 @@ def checkStatus():
 
     if status == "True":
       display.displayTimer(ROOT_DIR)
-      #check9hr()
       return True
 
     if status == "False":
