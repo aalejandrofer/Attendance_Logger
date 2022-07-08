@@ -108,11 +108,12 @@ def updateEntryOnLimit():
   global body
   
   body = {
-    "start":"08-07-2022 04:23",
+    "start":"2022-07-08T14:00:37Z",
     "billable":"true",
     "description":"lol",
     "projectId":project_id,
-    "taskId":task_id
+    "taskId":task_id,
+    "end":body["end"]
   }
   
   body['description'] = body["description"] + ' // Limit Reached!'
