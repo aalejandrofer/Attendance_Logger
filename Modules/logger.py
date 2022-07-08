@@ -123,7 +123,7 @@ def updateEntryOnLimit():
   print(entry_id)
   
   # https://api.clockify.me/api/v1/workspaces/{{workspaceID}}/time-entries/{{testEntryID}}
-  response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{id}", data=body, headers=headers)
+  response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{id}", data=json.dumps(body), headers=headers)
   print(response)
   print(response.json())
   
