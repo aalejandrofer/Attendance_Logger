@@ -12,4 +12,4 @@ It creates a log file with the recent sign ins and sign outs
 
 Program can be restarted mid-run, it makes the use of conf files to store the data
 
-> Place api_key.conf file inside Modules folder
+> Place api_key.conf file inside Modules folder.
