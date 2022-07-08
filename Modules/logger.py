@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 from time import sleep
 import requests
+=======
+
+import Modules.redisDB.redisDB as redisDB
+from datetime import datetime
+>>>>>>> e0014044cb5194aa2699cf4a1823661d848339ce
 import json
 from datetime import datetime, timedelta
 import os
 
+<<<<<<< HEAD
 from requests.api import get
 
 # Global Params
@@ -69,14 +76,51 @@ def getTime():
   #2021-07-27T08:00:00Z
   now = datetime.now()
   format_time = now.strftime(f"%Y-%m-%dT%H:%M:%SZ")
+=======
+class logger():
+  
+  def __init__(self):
+    
+    self.r = redisDB.redisDB()
+
+  def startTimer(self, streamTime:dict):
+    todayKey = self.todayKey()
+    
+    # Data
+    starTime = self.createTimestamp(datetime.now())
+    data = {"start":starTime, "end":0, "status":1} # status 1 as is not completed only start time added
+    
+    # Write to database
+    self.r.write("json", "entries", todayKey, data)
+  
+  def endTimer(self, streamTime:dict):
+    todayKey = self.todayKey()
+    
+    # Data
+    endTime = self.createTimestamp(datetime.now())
+    data = {"start":streamTime[todayKey]["start"] ,"end":endTime, "status":0} # status 0 as is completed
+
+    # Writes JSON to Redis database
+    self.r.write("json", "entries", todayKey, data)
+>>>>>>> e0014044cb5194aa2699cf4a1823661d848339ce
   
   nameOfDay = datetime.now().strftime('%A')
   
   return format_time, nameOfDay
 
+<<<<<<< HEAD
 # Creating a new time entry
 def startEntry(time, nameOfDay):
   global body
+=======
+  # From timestamp to date
+  def dateFromTimestamp(self, timestamp:int) -> datetime:
+    return datetime.fromtimestamp(timestamp)
+
+  # Reads JSON frmo Redis database
+  def readTimeEntry(self):
+    stream = self.r.read("json", "entries")
+>>>>>>> e0014044cb5194aa2699cf4a1823661d848339ce
 
   now = datetime.now()
   formatNow = now.strftime("%H:%M:%S")
