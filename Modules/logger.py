@@ -15,7 +15,7 @@ CONTENT_TYPE = "application/json"
 
 # Global Variables
 headers = {'content-type': CONTENT_TYPE, 'X-Api-Key': API_KEY}
-body = {''}
+body = {}
 user_name = ''
 user_id = ''
 workspace_id = ''
