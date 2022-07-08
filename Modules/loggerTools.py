@@ -93,7 +93,7 @@ def createSchedulerForTimeLimit():
   scheduler.add_job(checkTimeJob, 'interval', seconds=20) # Testing purposes
   scheduler.start()
 
-# Ensures status & config files are at least present (run once at startup)
+# Ensures status & config files are at least present (run once at startup).
 def setUpApp():
   PATH1 = ROOT_DIR + "/status.conf"
   PATH2 = ROOT_DIR + "/login.conf"
