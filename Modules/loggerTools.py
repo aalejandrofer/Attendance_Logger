@@ -82,7 +82,18 @@ def checkTimeJob():
     if s:
       endTimer()
 
+# Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
     scheduler = Scheduler()
-    scheduler.add_job(checkTimeJob, 'interval', seconds=10, id="timeLimitJob")
+    scheduler.add_job(checkTimeJob, 'interval', seconds=30, id="timeLimitJob")
     scheduler.start()
+
+# Ensures status & config files are at least present (run once at startup)
+def setUpApp():
+  PATH1 = ROOT_DIR + "/status.conf"
+  PATH2 = ROOT_DIR + "/login.conf"
+  
+  p1 = open(PATH1, "a+")
+  p1.close()
+  p2 = open(PATH2, "a+")
+  p2.close()

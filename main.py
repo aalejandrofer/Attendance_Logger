@@ -17,6 +17,8 @@ if __name__ == "__main__":
   # Background Task to Check if Timer Still Running After Working Hours
   ## If Timer running after 8pm, it will stop the timer
   lT.createSchedulerForTimeLimit()
+  
+  lT.setUpApp() # Checks that config files exist
 
   # Startin the loop when program starts up
   while True:
