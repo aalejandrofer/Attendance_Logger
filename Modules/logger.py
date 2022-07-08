@@ -135,9 +135,9 @@ def endEntry(time):
   response = response.json()
   body["end"] = time
   
-  print(response)
-  
   entry_id = response['id']
+  
+  print(entry_id)
   
   return response
 
