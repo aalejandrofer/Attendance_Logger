@@ -1,3 +1,4 @@
+from asyncore import write
 from time import sleep
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler as Scheduler
@@ -82,8 +83,14 @@ def checkTimeJob():
   print("Checking If Timer Is Running ...")
   s = checkStatus()
   if s:
-    endTimer()
-    response = logger.updateEntryOnLimit()
+    logger.terminateLog()
+    logger.updateEntryOnLimit()
+    
+    print("Ending Time Due to Time Limit")
+
+    writeStatus(False)
+    
+    sleep(3)
 
 # Creates the scheduler for the check time at 8pm daily
 def createSchedulerForTimeLimit():
