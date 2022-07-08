@@ -113,7 +113,7 @@ def updateEntryOnLimit():
   response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{id}", data=body, headers=headers)
   response = response.json()
   
-  return response
+  return response["description"]
 
 # Ending the time entry
 def endEntry(time):
