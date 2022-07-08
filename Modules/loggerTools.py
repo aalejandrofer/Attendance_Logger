@@ -89,7 +89,7 @@ def checkTimeJob():
 def createSchedulerForTimeLimit():
   scheduler = Scheduler(timezone="Europe/London")
   #scheduler.add_job(checkTimeJob, 'cron', hour="04", minute="40", id="timeLimitJob")
-  scheduler.add_job(checkTimeJob, 'interval', seconds=5) # Testing purposes
+  scheduler.add_job(checkTimeJob, 'interval', seconds=20) # Testing purposes
   scheduler.start()
 
 # Ensures status & config files are at least present (run once at startup)
