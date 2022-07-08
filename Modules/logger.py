@@ -108,6 +108,7 @@ def endEntry(time):
 
   body = {
     "end":time,
+    "description": "Timer Stopped By Limit"
   }
 
   response = requests.patch(f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/user/{user_id}/time-entries', data=json.dumps(body), headers=headers)
