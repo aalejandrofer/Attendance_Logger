@@ -11,6 +11,8 @@ def some_job():
     with open(PATH, "w") as f:
         f.write(f"Yep")
 
-scheduler = Scheduler()
-scheduler.add_job(some_job, 'interval', seconds=5, id="timeLimitJob")
-scheduler.start()
+def start():
+    scheduler = Scheduler()
+    scheduler.add_job(some_job, 'interval', seconds=5, id="timeLimitJob")
+    scheduler.start()
+    
