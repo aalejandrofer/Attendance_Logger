@@ -1,10 +1,7 @@
-from time import sleep
 import requests
 import json
 from datetime import datetime, timedelta
 import os
-
-from requests.api import get
 
 # Global Params
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

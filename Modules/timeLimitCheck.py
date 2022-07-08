@@ -2,12 +2,15 @@ import datetime
 import time
 from apscheduler.schedulers.background import BackgroundScheduler as Scheduler
 
-import main
+
+# Check Status
+
+
+# If Status True (Running)
 
 # Start the scheduler
 def timeCheckJob():
     print("checking time")
-    print(main.checkStatus())
 
 def start():
     scheduler = Scheduler()
