@@ -1,0 +1,4 @@
+pillow
+redis
+smbus
+RPi.GPIO

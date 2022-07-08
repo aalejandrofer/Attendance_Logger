@@ -1,116 +1,77 @@
 from time import sleep
-from datetime import date, datetime, timedelta
-import os
+from datetime import datetime
 
 # Modules
 import Modules.logger as logger
-import Modules.display as display
+import Modules.redisDB.redisDB as redisDB
+# import Modules.display as display #TODO only be run while connected to the PI
 
-# Coded in Python 3.8
+# Coded in Python 3.10
 # Install Pip3 to get the requests dependancy
-# Example: sudo apt-get -y install python3-pip python3 && pip3 install requests
+# Example: sudo apt-get -y install python3-pip python3 && pip3 install redis
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-
-def writeStatus(status):
-  PATH = ROOT_DIR + "/status.conf"
-  with open(PATH, "w") as f:
-    f.write(f"{status}")
-
+# Checks for the RFID stags that are set for this project
 def checkRFData(data):
   if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
-    display.createSound()
+    # display.createSound() #TODO only be run while connected to the PI
     return True
   else:
     return False
 
-#Incase user forgets to logout
-def check9hr():
-  PATH = ROOT_DIR + "/login.conf"
-
-  with open(PATH, "r") as f:
-    startTime = f.readline()
-    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
-
-    timeToStop = startTime + timedelta(hours=9)
-    now = datetime.now()
-
-    if timeToStop < now:
-      print("Ended due to TimeLimit")
-      endTimer()
-
-# Create a timer
-def startTimer():
-
-  startResponse = logger.startLog()
-  
-  print("Starting Timer")
-  display.displayRead()
-
-  writeStatus(True)
-
-  # Logging Start time
-  PATH = ROOT_DIR + "/login.conf"
-  with open(PATH, "w") as f:
-    now = datetime.now().strftime("%d-%m-%Y %H:%M")
-    f.write(now)
-          
-  sleep(2)
-
-# End the timer
-def endTimer():
-  
-  endResponse = logger.terminateLog()
-  display.displayEnd()
-  print("Ending Timer")
-
-  writeStatus(False)
-
-  sleep(3)
-
-# False if timer not running
-# True if timer is running
-def checkStatus():
-  PATH = ROOT_DIR + "/status.conf"
-
-  with open(PATH, "r") as f:
-    status = f.readline().rstrip()
-
-    if status == "True":
-      display.displayTimer(ROOT_DIR)
-      #check9hr()
-      return True
-
-    if status == "False":
-      display.waitingToRead()
-      return False
-    
-    else:
-      writeStatus(False)
-      return False
-
 if __name__ == "__main__":
 
-  display.welcomeUser()
+  #display.welcomeUser() #TODO only be run while connected to the PI
   sleep(0.5)
 
   # Startin the loop when program starts up
   while True:
 
-    status = checkStatus()
-    print(f"{status}")
+    #display.waitingToRead()
 
-    data = display.read_rfid.read_rfid()
+    streamTime, lastStatus = logger.logger().readTimeEntry()
+    print(streamTime)
+
+    if lastStatus == 1:
+      print("")
+      #display.displayTimer(x[b"lastStart"]) #TODO only be run while connected to the PI
     
-    isRead = checkRFData(data)
-    print(f"{data} + {isRead}")
+    #data = display.read_rfid.read_rfid() #TODO only be run while connected to the PI
+    
+    #isRead = checkRFData(data)
+    #print(f"{data} + {isRead}")
+
+    isRead = True #TODO dev only
 
     if isRead:
-      if status == False:
-        startTimer()
+      
+      #display.displayRead()
 
-      elif status == True:
-        endTimer()
+      streamTime, lastStatus = logger.logger().readTimeEntry() # Represents the Last 2 time entries # If status True, then the last 2 entries match start and end
+
+      # Create Tasks based on lastStatus
+      # # 0 = Day is Done
+      # # 1 = Day is not Done
+      # # 2 = Some Error
+      
+      e = logger.logger().endTimer(streamTime)
+       
+      if lastStatus == 0:
+        # Start a new timer (start)
+        break
+      elif lastStatus == 1:
+        # End timer (end)
+        break
+      elif lastStatus == 2:
+        # Some error
+        break
+        
+     
+    
+    sleep(3) # Wait until it reads from device again
+    
+    
+
+    
 
 
 
