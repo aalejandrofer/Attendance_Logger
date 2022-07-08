@@ -21,7 +21,7 @@ def writeStatus(status):
     f.write(f"{status}")
 
 def checkRFData(data):
-  if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID
+  if data == ("02004819B2E1") or data == ("0D004EC21091"): #TODO add card ID.
     display.createSound()
     return True
   else:
