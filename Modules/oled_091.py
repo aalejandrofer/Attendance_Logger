@@ -138,6 +138,8 @@ class SSD1306(i2c_interface):
         self.WriteCommand(0xFF)
         self.WriteCommand(0xA1)
 
+        self.WriteCommand(DISPLAY_INVERT)
+
         self.WriteCommand(MUX_RATIO)
         self.WriteCommand(0x1F)  # Column Start Address
 
@@ -211,7 +213,7 @@ class SSD1306(i2c_interface):
             self.WriteCommand(0x10)  # set high column address
             # write data #
             for j in range(0, 128):  # self.Width):
-                self.WriteData(~i_buf[j + self.Width * i])  # Invert pixels
+                self.WriteData(i_buf[j + self.Width * i])
         self.NewImage()
 
     def PrintText(self, text, cords=(10, 5), Font=DefaultFont,
