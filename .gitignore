@@ -139,9 +139,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Copilot Rules
-.github
-
 # Local storage
 localstorage/
 *.conf
