@@ -47,7 +47,6 @@ GPIO.setwarnings(False)
 GPIO.setup(17,GPIO.OUT)
 
 DIR_PATH = path.abspath(path.dirname(__file__))
-DefaultFont = path.join(DIR_PATH, "Fonts/GothamLight.ttf")
 
 display = SSD1306()
 
