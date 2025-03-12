@@ -1,4 +1,5 @@
 import os
+import json  # Add this import
 from time import sleep
 from os import path
 from datetime import datetime
@@ -10,6 +11,8 @@ except:
 
 import serial
 import RPi.GPIO as GPIO
+
+from config import STATE_FILE, ROOT_DIR  # Add this import
 
 #########################################################
   # FIRST INSTALL
@@ -65,11 +68,11 @@ def createSound():
 
 def welcomeUser():
   display.DrawRect()
-  display.PrintText("Welcome!", cords=(5, 10), FontSize=13)
+  display.PrintText("Welcome!", cords=(5, 10), FontSize=11)
   display.ShowImage()
   sleep(1)
   display.DrawRect()
-  display.PrintText("Loading...", cords=(5, 10), FontSize=13)
+  display.PrintText("Loading...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def waitingToRead():
@@ -77,27 +80,38 @@ def waitingToRead():
   display.PrintText("Waiting To Read", cords=(5, 10), FontSize=11)
   display.ShowImage()
         
-def displayRead():
+def displayRead(name):
   display.DrawRect()
-  display.PrintText("ID Read, Starting...", cords=(5, 10), FontSize=11)
+  display.PrintText(f"ID, {name}...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
-def displayTimer(ROOTDIR):
+def displayTimer():
   display.DrawRect()
-  display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
+  display.PrintText("Logged In", cords=(5, 10), FontSize=11)
   display.ShowImage()
   
   sleep(2)
-  PATH = ROOTDIR + "/login.conf"
 
-  with open(PATH, "r") as f:
-    startTime = f.readline().rstrip()
-    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
-    startTime = datetime.strftime(startTime,"%H:%M")
+  try:
+    if os.path.exists(STATE_FILE):
+      with open(STATE_FILE, 'r') as file:
+        state_data = json.load(file)
+      
+      active_session = state_data.get('active_session')
+      
+      if active_session and active_session.get('start_time'):
+        startTime = datetime.strptime(active_session['start_time'], "%d-%m-%Y %H:%M")
+        startTime = datetime.strftime(startTime, "%H:%M")
 
-  display.DrawRect()
-  display.PrintText(f"Logged In, : {startTime} :", cords=(5, 10), FontSize=11)
-  display.ShowImage()
+        display.DrawRect()
+        display.PrintText(f"Logged In: {startTime}", cords=(5, 10), FontSize=11)
+        display.ShowImage()
+      else:
+        waitingToRead()
+  except Exception as e:
+    display.DrawRect()
+    display.PrintText("Error Reading Time", cords=(5, 10), FontSize=11)
+    display.ShowImage()
 
 def displayEnd():
   display.DrawRect()
