@@ -74,6 +74,19 @@ class ClockifyLogger:
 
         return response
 
+    def get_in_progress(self, workspace_id):
+        """Return Clockify's currently in-progress entries for a workspace."""
+        url = f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/status/in-progress'
+        try:
+            resp = requests.get(url, headers=self.headers, timeout=REQUEST_TIMEOUT)
+            if resp.status_code != 200:
+                logging.error(f"Failed to fetch in-progress entries: {resp.text}")
+                return []
+            return resp.json() or []
+        except Exception as e:
+            logging.error(f"Error fetching in-progress entries: {e}")
+            return []
+
     def endEntry(self, tag_uuid, time):
         """End the exact Clockify entry that this tag's session started.
 
