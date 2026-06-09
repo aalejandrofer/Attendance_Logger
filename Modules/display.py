@@ -1,9 +1,7 @@
-import os
 from time import sleep
 from os import path
-from datetime import datetime
 
-try: 
+try:
   from Modules.oled_091 import SSD1306
 except:
   from oled_091 import SSD1306
@@ -44,7 +42,6 @@ GPIO.setwarnings(False)
 GPIO.setup(17,GPIO.OUT)
 
 DIR_PATH = path.abspath(path.dirname(__file__))
-DefaultFont = path.join(DIR_PATH, "Fonts/GothamLight.ttf")
 
 display = SSD1306()
 
@@ -65,11 +62,11 @@ def createSound():
 
 def welcomeUser():
   display.DrawRect()
-  display.PrintText("Welcome!", cords=(5, 10), FontSize=13)
+  display.PrintText("Welcome!", cords=(5, 10), FontSize=11)
   display.ShowImage()
   sleep(1)
   display.DrawRect()
-  display.PrintText("Loading...", cords=(5, 10), FontSize=13)
+  display.PrintText("Loading...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def waitingToRead():
@@ -77,26 +74,16 @@ def waitingToRead():
   display.PrintText("Waiting To Read", cords=(5, 10), FontSize=11)
   display.ShowImage()
         
-def displayRead():
+def displayRead(name):
   display.DrawRect()
-  display.PrintText("ID Read, Starting...", cords=(5, 10), FontSize=11)
+  display.PrintText(f"ID, {name}...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
-def displayTimer(ROOTDIR):
+def displayActive(count):
+  """Idle screen showing how many users are currently clocked in."""
+  label = "1 Logged In" if count == 1 else f"{count} Logged In"
   display.DrawRect()
-  display.PrintText("Logged In, Counting", cords=(5, 10), FontSize=11)
-  display.ShowImage()
-  
-  sleep(2)
-  PATH = ROOTDIR + "/login.conf"
-
-  with open(PATH, "r") as f:
-    startTime = f.readline().rstrip()
-    startTime = datetime.strptime(startTime,"%d-%m-%Y %H:%M")
-    startTime = datetime.strftime(startTime,"%H:%M")
-
-  display.DrawRect()
-  display.PrintText(f"Logged In, : {startTime} :", cords=(5, 10), FontSize=11)
+  display.PrintText(label, cords=(5, 10), FontSize=11)
   display.ShowImage()
 
 def displayEnd():

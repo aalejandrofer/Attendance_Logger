@@ -1,0 +1,9 @@
+apscheduler==3.10.4
+RPi.GPIO==0.7.1
+Pillow==9.5.0
+pytz==2023.3
+requests==2.31.0
+supabase==0.7.1
+smbus==1.1.post2
+pyserial==3.5
+python-dotenv==0.21.1
