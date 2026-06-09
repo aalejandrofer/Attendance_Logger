@@ -7,6 +7,7 @@ import requests
 
 from config import TIMEZONE, WORK_END_HOUR, REQUEST_TIMEOUT
 from Modules.state_manager import StateManager
+from Modules.reconcile import reconcile_sessions
 import Modules.logger as logger
 import Modules.display as display
 
@@ -82,12 +83,38 @@ class TimeChecker:
                 logging.error(f"Error ending overtime session: {e}")
 
     def check_startup_sessions(self):
-        """Log any sessions left active from a previous run."""
+        """Reconcile local sessions with Clockify (the source of truth).
+
+        Rebuilds any in-progress Clockify entry that has no local session
+        (e.g. a crash between starting the entry and saving local state, or a
+        timer that was running across a service restart), and drops local
+        sessions whose entry is no longer running.
+        """
         try:
-            sessions = self.state_manager.get_active_sessions()
-            for session in sessions.values():
-                user_name = session['user_data'].get('name', 'Unknown')
-                start_time = session['start_time']
-                logging.info(f"Found active session for {user_name} started at {start_time}")
+            db = logger.logger_instance.db
+            projects = db.get_all_projects()
+            workspaces = {p['workspace_id'] for p in projects}
+
+            in_progress = []
+            for ws in workspaces:
+                in_progress.extend(logger.logger_instance.get_in_progress(ws))
+
+            active = self.state_manager.get_active_sessions()
+            to_add, to_remove = reconcile_sessions(projects, in_progress, active)
+
+            for tag_uuid, (user_data, entry) in to_add.items():
+                self.state_manager.start_session(tag_uuid, user_data, entry)
+                logging.info(
+                    f"Recovered active session for {user_data['name']} "
+                    f"(Clockify entry {entry['clockify_entry_id']})"
+                )
+
+            for tag_uuid in to_remove:
+                name = active.get(tag_uuid, {}).get('user_data', {}).get('name', 'Unknown')
+                self.state_manager.end_session(tag_uuid)
+                logging.info(f"Cleared stale local session for {name} (entry not running)")
+
+            if not to_add and not to_remove:
+                logging.info(f"Startup reconcile: {len(active)} active session(s), all consistent")
         except Exception as e:
-            logging.error(f"Error checking startup session: {e}")
+            logging.error(f"Error reconciling startup sessions: {e}")

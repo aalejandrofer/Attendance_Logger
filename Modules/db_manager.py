@@ -41,6 +41,23 @@ class DatabaseManager:
             logging.error(f"Database error in get_user_by_tag: {e}")
             return None
 
+    def get_all_projects(self):
+        """All project rows (tag -> person mapping) for startup reconciliation."""
+        try:
+            response = self.supabase.table('projects').select(
+                'id',
+                'name',
+                'user_id',
+                'tag_uuid',
+                'project_id',
+                'workspace_id',
+                'task_id'
+            ).execute()
+            return response.data or []
+        except Exception as e:
+            logging.error(f"Database error in get_all_projects: {e}")
+            return []
+
     @lru_cache(maxsize=32)
     def get_project_details(self, project_id):
         """Get project details using string ID from Clockify"""
