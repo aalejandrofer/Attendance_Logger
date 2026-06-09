@@ -24,7 +24,7 @@ if __name__ == "__main__":
     
     # Start time checker and check for leftover sessions
     time_checker = TimeChecker(check_interval=300)
-    time_checker.check_startup_sessions() # Check for leftover sessions
+    time_checker.reconcile() # Sync local state with Clockify before the loop
     time_checker.start()
     
     try:

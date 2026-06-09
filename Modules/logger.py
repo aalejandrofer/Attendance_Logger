@@ -75,17 +75,22 @@ class ClockifyLogger:
         return response
 
     def get_in_progress(self, workspace_id):
-        """Return Clockify's currently in-progress entries for a workspace."""
+        """Clockify's in-progress entries for a workspace.
+
+        Returns a list on success (possibly empty), or None if the fetch
+        failed. Callers must distinguish: an empty list means "nothing
+        running", None means "don't trust this — leave local state alone".
+        """
         url = f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/status/in-progress'
         try:
             resp = requests.get(url, headers=self.headers, timeout=REQUEST_TIMEOUT)
             if resp.status_code != 200:
                 logging.error(f"Failed to fetch in-progress entries: {resp.text}")
-                return []
+                return None
             return resp.json() or []
         except Exception as e:
             logging.error(f"Error fetching in-progress entries: {e}")
-            return []
+            return None
 
     def endEntry(self, tag_uuid, time):
         """End the exact Clockify entry that this tag's session started.

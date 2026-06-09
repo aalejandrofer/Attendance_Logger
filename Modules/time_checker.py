@@ -43,10 +43,13 @@ class TimeChecker:
         """Main checker loop"""
         while not self._stop_event.is_set():
             try:
+                # Re-sync with Clockify each tick so mid-day drift self-heals
+                # without waiting for a restart.
+                self.reconcile()
                 self._check_active_sessions()
             except Exception as e:
                 logging.error(f"Error in time checker: {e}")
-            
+
             # Sleep until next check, but allow interruption
             self._stop_event.wait(self.check_interval)
                 
@@ -82,22 +85,34 @@ class TimeChecker:
             except Exception as e:
                 logging.error(f"Error ending overtime session: {e}")
 
-    def check_startup_sessions(self):
+    def reconcile(self):
         """Reconcile local sessions with Clockify (the source of truth).
 
         Rebuilds any in-progress Clockify entry that has no local session
         (e.g. a crash between starting the entry and saving local state, or a
-        timer that was running across a service restart), and drops local
-        sessions whose entry is no longer running.
+        timer running across a restart), and drops local sessions whose entry
+        is no longer running.
+
+        Safe to run repeatedly. Bails out without touching local state if
+        Supabase projects can't be loaded or any Clockify fetch fails, so a
+        transient network error can never wipe active sessions.
         """
         try:
             db = logger.logger_instance.db
             projects = db.get_all_projects()
+            if not projects:
+                logging.warning("Reconcile skipped: no projects loaded")
+                return
+
             workspaces = {p['workspace_id'] for p in projects}
 
             in_progress = []
             for ws in workspaces:
-                in_progress.extend(logger.logger_instance.get_in_progress(ws))
+                fetched = logger.logger_instance.get_in_progress(ws)
+                if fetched is None:
+                    logging.warning("Reconcile skipped: Clockify fetch failed")
+                    return
+                in_progress.extend(fetched)
 
             active = self.state_manager.get_active_sessions()
             to_add, to_remove = reconcile_sessions(projects, in_progress, active)
