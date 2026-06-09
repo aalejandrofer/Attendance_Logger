@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from operator import lt
 from time import sleep
 import os
 
@@ -31,25 +30,33 @@ if __name__ == "__main__":
     try:
         # Main loop
         while True:
-            if lT.state.get_active_session():
-                display.displayTimer()
-            else:
-                display.waitingToRead()
-            
-            data = display.read_rfid.read_rfid()
-            user_data, tag_uuid = lT.checkRFData(data)
-            print(f"ID: {data}\n")
+            try:
+                if lT.state.get_active_session():
+                    display.displayTimer()
+                else:
+                    display.waitingToRead()
 
-            if not user_data:
+                data = display.read_rfid.read_rfid()
+                user_data, tag_uuid = lT.checkRFData(data)
+                print(f"ID: {data}\n")
+
+                if not user_data:
+                    sleep(1)
+                    continue
+
+                if not lT.state.is_session_active(tag_uuid):
+                    lT.startTimer(user_data, tag_uuid)
+                else:
+                    lT.endTimer(tag_uuid)
+                    sleep(2)  # Show end message briefly
+
+            except KeyboardInterrupt:
+                raise
+            except Exception as e:
+                # A garbled serial read or transient error must not kill the device.
+                print(f"[ERROR] loop iteration failed: {e}\n")
                 sleep(1)
-                continue
 
-            if not lT.state.is_session_active(tag_uuid):
-                lT.startTimer(user_data, tag_uuid)
-            else:
-                lT.endTimer(tag_uuid)
-                sleep(2)  # Show end message briefly
-                
     except KeyboardInterrupt:
         print("\nShutting down...")
     finally:

@@ -5,7 +5,7 @@ import pytz
 from typing import Optional
 import requests
 
-from config import TIMEZONE, WORK_END_HOUR
+from config import TIMEZONE, WORK_END_HOUR, REQUEST_TIMEOUT
 from Modules.state_manager import StateManager
 import Modules.logger as logger
 import Modules.display as display
@@ -72,7 +72,8 @@ class TimeChecker:
                             json={
                                 **endResponse,
                                 'tagIds': [TIMELIMIT_TAG_ID]
-                            }
+                            },
+                            timeout=REQUEST_TIMEOUT
                         )
                         
                     self.state_manager.end_session()

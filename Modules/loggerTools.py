@@ -1,4 +1,5 @@
 import logging
+import os
 from time import sleep
 from config import ROOT_DIR
 # Modules
@@ -15,7 +16,7 @@ db = DatabaseManager()
 state = StateManager(ROOT_DIR)
 
 logging.basicConfig(
-    filename='attendance.log',
+    filename=os.path.join(ROOT_DIR, 'attendance.log'),
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )

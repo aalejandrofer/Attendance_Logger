@@ -15,4 +15,5 @@ def read_rfid2 ():
    open("./id.txt", "+w").write(data)
    return data                                                    #Return data
 
-id = read_rfid2 ()                                              #Function call   
+if __name__ == "__main__":
+   id = read_rfid2 ()                                              #Function call

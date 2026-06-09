@@ -10,6 +10,8 @@ SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 CLOCKIFY_API_KEY = os.getenv('CLOCKIFY_API_KEY')
 TIMEZONE = os.getenv('TIMEZONE', 'Europe/London')
 WORK_END_HOUR = int(os.getenv('WORK_END_HOUR', 20))
+# Seconds before any Clockify HTTP request gives up (prevents hung device)
+REQUEST_TIMEOUT = int(os.getenv('REQUEST_TIMEOUT', 10))
 
 # Directory settings
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

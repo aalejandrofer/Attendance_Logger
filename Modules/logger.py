@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 import pytz
 import logging
-from config import TIMEZONE, CLOCKIFY_API_KEY, ROOT_DIR
+from config import TIMEZONE, CLOCKIFY_API_KEY, ROOT_DIR, REQUEST_TIMEOUT
 from Modules.db_manager import DatabaseManager
 from Modules.state_manager import StateManager
 
@@ -45,7 +45,7 @@ class ClockifyLogger:
 
         body = {
             "start": time,
-            "billable": "true",
+            "billable": True,
             "description": description,
             "projectId": entry_data['project_id'],
             "taskId": entry_data['task_id']
@@ -54,7 +54,8 @@ class ClockifyLogger:
         response = requests.post(
             f'https://api.clockify.me/api/v1/workspaces/{entry_data["workspace_id"]}/time-entries',
             data=json.dumps(body),
-            headers=self.headers
+            headers=self.headers,
+            timeout=REQUEST_TIMEOUT
         )
         
         if response.status_code == 201:
@@ -82,8 +83,9 @@ class ClockifyLogger:
             # Get current in-progress entry
             in_progress_url = f'https://api.clockify.me/api/v1/workspaces/{entry_data["workspace_id"]}/time-entries/status/in-progress'
             active_entry = requests.get(
-                in_progress_url, 
-                headers=self.headers
+                in_progress_url,
+                headers=self.headers,
+                timeout=REQUEST_TIMEOUT
             )
             
             if active_entry.status_code != 200:
@@ -101,7 +103,7 @@ class ClockifyLogger:
             # End the entry using PUT method
             end_url = f'https://api.clockify.me/api/v1/workspaces/{entry_data["workspaceId"]}/time-entries/{entry_data["id"]}'
             response = requests.put(
-                end_url, 
+                end_url,
                 headers=self.headers,
                 json={
                     "start": entry_data["timeInterval"]["start"],
@@ -110,7 +112,8 @@ class ClockifyLogger:
                     "description": entry_data["description"],
                     "projectId": entry_data["projectId"],
                     "taskId": entry_data["taskId"]
-                }
+                },
+                timeout=REQUEST_TIMEOUT
             )
             
             if response.status_code != 200:
@@ -134,21 +137,6 @@ class ClockifyLogger:
         except Exception as e:
             logging.error(f"Error ending entry: {e}")
             return None
-
-    def updateEntryOnLimit(self):
-        self.current_entry['description'] = self.current_entry["description"] + ' // Limit Reached!'
-        response = requests.put(f"https://api.clockify.me/api/v1/workspaces/{self.current_entry['workspace_id']}/time-entries/{self.current_entry['entry_id']}", data=json.dumps(self.current_entry), headers=self.headers)
-        
-        # Update Supabase entry
-        self.db.update_time_entry(
-            self.current_entry['entry_id'],
-            {
-                'status': 'limit_reached',
-                'description': self.current_entry['description']
-            }
-        )
-        
-        return response
 
 # Initialize logger with API key
 logger_instance = ClockifyLogger(CLOCKIFY_API_KEY)
