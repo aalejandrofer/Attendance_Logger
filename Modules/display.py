@@ -1,18 +1,13 @@
-import os
-import json  # Add this import
 from time import sleep
 from os import path
-from datetime import datetime
 
-try: 
+try:
   from Modules.oled_091 import SSD1306
 except:
   from oled_091 import SSD1306
 
 import serial
 import RPi.GPIO as GPIO
-
-from config import STATE_FILE, ROOT_DIR  # Add this import
 
 #########################################################
   # FIRST INSTALL
@@ -84,33 +79,12 @@ def displayRead(name):
   display.PrintText(f"ID, {name}...", cords=(5, 10), FontSize=11)
   display.ShowImage()
 
-def displayTimer():
+def displayActive(count):
+  """Idle screen showing how many users are currently clocked in."""
+  label = "1 Logged In" if count == 1 else f"{count} Logged In"
   display.DrawRect()
-  display.PrintText("Logged In", cords=(5, 10), FontSize=11)
+  display.PrintText(label, cords=(5, 10), FontSize=11)
   display.ShowImage()
-  
-  sleep(2)
-
-  try:
-    if os.path.exists(STATE_FILE):
-      with open(STATE_FILE, 'r') as file:
-        state_data = json.load(file)
-      
-      active_session = state_data.get('active_session')
-      
-      if active_session and active_session.get('start_time'):
-        startTime = datetime.strptime(active_session['start_time'], "%d-%m-%Y %H:%M")
-        startTime = datetime.strftime(startTime, "%H:%M")
-
-        display.DrawRect()
-        display.PrintText(f"Logged In: {startTime}", cords=(5, 10), FontSize=11)
-        display.ShowImage()
-      else:
-        waitingToRead()
-  except Exception as e:
-    display.DrawRect()
-    display.PrintText("Error Reading Time", cords=(5, 10), FontSize=11)
-    display.ShowImage()
 
 def displayEnd():
   display.DrawRect()

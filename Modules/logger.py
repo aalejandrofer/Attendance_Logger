@@ -25,23 +25,26 @@ class ClockifyLogger:
             'task_id': task_id
         }
         time, nameOfDay = self.getTime()
-        self.state.save_entry(entry_data)  # No need for tag_uuid
-        return self.startEntry(time, nameOfDay)
+        return self.startEntry(time, nameOfDay, entry_data)
 
     def getTime(self):
-        """Get timezone-aware timestamp"""
-        now = datetime.now(self.tz)
-        format_time = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-        return format_time, now.strftime('%A')
+        """Return (utc_timestamp, local_day_name).
+
+        Clockify expects UTC timestamps with the 'Z' suffix. The day name is
+        kept in the configured local timezone for the human-readable description.
+        """
+        utc_now = datetime.now(pytz.utc)
+        format_time = utc_now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        local_day = datetime.now(self.tz).strftime('%A')
+        return format_time, local_day
 
     def formatDescription(self, nameOfDay):
         now = datetime.now(self.tz)
         suffix = {1:'st', 2:'nd', 3:'rd'}.get(now.day % 20, 'th')
         return f"{nameOfDay} {now.day}{suffix} at {now.strftime('%H:%M:%S')}"
 
-    def startEntry(self, time, nameOfDay):
+    def startEntry(self, time, nameOfDay, entry_data):
         description = self.formatDescription(nameOfDay)
-        entry_data = self.state.get_entry()
 
         body = {
             "start": time,
@@ -57,7 +60,7 @@ class ClockifyLogger:
             headers=self.headers,
             timeout=REQUEST_TIMEOUT
         )
-        
+
         if response.status_code == 201:
             response_data = response.json()
             supabase_body = {
@@ -68,72 +71,54 @@ class ClockifyLogger:
                 'status': 'active'
             }
             self.db.log_time_entry(supabase_body)
-        
+
         return response
 
-    def endEntry(self, time):
-        entry_data = self.state.get_entry()
-        session = self.state.get_active_session()
-        
-        if not entry_data or not session:
-            logging.error("No active entry found")
+    def endEntry(self, tag_uuid, time):
+        """End the exact Clockify entry that this tag's session started.
+
+        Uses the clockify_entry_id stored at start time, so concurrent users
+        never end each other's entries.
+        """
+        session = self.state.get_session(tag_uuid)
+        entry = session.get('entry') if session else None
+
+        if not entry or not entry.get('clockify_entry_id'):
+            logging.error(f"No stored Clockify entry for tag {tag_uuid}")
             return None
 
         try:
-            # Get current in-progress entry
-            in_progress_url = f'https://api.clockify.me/api/v1/workspaces/{entry_data["workspace_id"]}/time-entries/status/in-progress'
-            active_entry = requests.get(
-                in_progress_url,
-                headers=self.headers,
-                timeout=REQUEST_TIMEOUT
+            end_url = (
+                f'https://api.clockify.me/api/v1/workspaces/'
+                f'{entry["workspace_id"]}/time-entries/{entry["clockify_entry_id"]}'
             )
-            
-            if active_entry.status_code != 200:
-                logging.error(f"Failed to get active entry: {active_entry.text}")
-                return None
-                
-            entries = active_entry.json()
-            if not entries or len(entries) == 0:
-                logging.error("No active time entries found")
-                return None
-            
-            # Get the most recent entry
-            entry_data = entries[0]
-                
-            # End the entry using PUT method
-            end_url = f'https://api.clockify.me/api/v1/workspaces/{entry_data["workspaceId"]}/time-entries/{entry_data["id"]}'
             response = requests.put(
                 end_url,
                 headers=self.headers,
                 json={
-                    "start": entry_data["timeInterval"]["start"],
+                    "start": entry["start"],
                     "end": time,
-                    "billable": entry_data["billable"],
-                    "description": entry_data["description"],
-                    "projectId": entry_data["projectId"],
-                    "taskId": entry_data["taskId"]
+                    "billable": entry.get("billable", True),
+                    "description": entry.get("description"),
+                    "projectId": entry["projectId"],
+                    "taskId": entry["taskId"]
                 },
                 timeout=REQUEST_TIMEOUT
             )
-            
+
             if response.status_code != 200:
                 logging.error(f"Failed to end entry: {response.text}")
                 return None
-                
+
             response_data = response.json()
-            
-            # Update Supabase with both clockify_entry_id and end_time
-            update_data = {
-                'end_time': time,
-                'status': 'completed'
-            }
-            self.db.update_time_entry(entry_data["id"], update_data)
-            
-            # Clear entry data
-            self.state.save_entry(None)
-            
+
+            self.db.update_time_entry(
+                entry["clockify_entry_id"],
+                {'end_time': time, 'status': 'completed'}
+            )
+
             return response_data
-            
+
         except Exception as e:
             logging.error(f"Error ending entry: {e}")
             return None
@@ -146,11 +131,11 @@ def startLog(user_id, project_id, workspace_id, task_id, tag_uuid):
     return logger_instance.startLog(user_id, project_id, workspace_id, task_id, tag_uuid)
 
 def terminateLog(tag_uuid):
-    time, nameOfDay = logger_instance.getTime()
-    session = logger_instance.state.get_active_session()
-    
-    if not session or session.get('tag_uuid') != tag_uuid:
-        logging.warning(f"Attempt to end session with wrong tag: {tag_uuid}")
+    time, _ = logger_instance.getTime()
+    session = logger_instance.state.get_session(tag_uuid)
+
+    if not session:
+        logging.warning(f"No active session for tag: {tag_uuid}")
         return None
-        
-    return logger_instance.endEntry(time)
+
+    return logger_instance.endEntry(tag_uuid, time)

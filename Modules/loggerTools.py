@@ -31,7 +31,7 @@ def checkRFData(data):
 def startTimer(user_data, tag_uuid):
     try:
         logging.info(f"Starting timer for user: {user_data}")
-        
+
         startResponse = logger.startLog(
             user_id=user_data['user_id'],
             project_id=user_data['project_id'],
@@ -39,38 +39,44 @@ def startTimer(user_data, tag_uuid):
             task_id=user_data['task_id'],
             tag_uuid=tag_uuid
         )
-        
+
         if startResponse.status_code == 201:
+            rd = startResponse.json()
+            # Persist everything needed to end THIS exact entry later.
+            entry = {
+                'clockify_entry_id': rd['id'],
+                'workspace_id': user_data['workspace_id'],
+                'projectId': rd.get('projectId', user_data['project_id']),
+                'taskId': rd.get('taskId', user_data['task_id']),
+                'description': rd.get('description'),
+                'start': rd['timeInterval']['start'],
+                'billable': rd.get('billable', True),
+            }
+            state.start_session(tag_uuid, user_data, entry)
             logging.info(f"Timer started for {user_data['name']}")
             display.displayRead(user_data['name'])
-            state.start_session(tag_uuid, user_data)
             sleep(2)  # Show start message briefly
-            display.displayTimer()  # Show timer immediately after start
             return True
-            
+
         logging.error(f"Failed to start timer: {startResponse.text}")
         return False
-            
+
     except Exception as e:
         logging.error(f"Error starting timer: {e}")
         return False
 
 def endTimer(tag_uuid):
     try:
-        session = state.get_active_session()
+        session = state.get_session(tag_uuid)
         if not session:
-            logging.error("No active session found")
+            logging.error(f"No active session for tag: {tag_uuid}")
             return False
-            
-        if session['tag_uuid'] != tag_uuid:
-            logging.warning(f"Wrong tag used to end session. Expected: {session['tag_uuid']}, Got: {tag_uuid}")
-            return False
-            
+
         endResponse = logger.terminateLog(tag_uuid)
         if endResponse:
             logging.info(f"Timer ended for {session['user_data']['name']}")
             display.displayEnd()
-            state.end_session()
+            state.end_session(tag_uuid)
             return True
         else:
             logging.error("Failed to end timer - no active entry")

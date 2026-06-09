@@ -50,42 +50,42 @@ class TimeChecker:
             self._stop_event.wait(self.check_interval)
                 
     def _check_active_sessions(self):
-        """Check active session and end if past work hours"""
+        """End every active session once past work hours."""
         now = datetime.now(self.timezone)
-        
-        if now.hour >= WORK_END_HOUR:
-            session = self.state_manager.get_active_session()
-            
-            if session:
-                try:
-                    logging.info(f"Ending overtime session for {session['user_data']['name']}")
-                    # Pass the tag_uuid from the active session
-                    endResponse = logger.terminateLog(session['tag_uuid'])
-                    
-                    if endResponse and 'id' in endResponse:
-                        # Add time limit tag to the entry
-                        tag_url = f'https://api.clockify.me/api/v1/workspaces/{session["user_data"]["workspace_id"]}/time-entries/{endResponse["id"]}'
-                        logger.logger_instance.headers['Content-Type'] = 'application/json'
-                        requests.put(
-                            tag_url,
-                            headers=logger.logger_instance.headers,
-                            json={
-                                **endResponse,
-                                'tagIds': [TIMELIMIT_TAG_ID]
-                            },
-                            timeout=REQUEST_TIMEOUT
-                        )
-                        
-                    self.state_manager.end_session()
-                    logging.info("Successfully ended overtime session with time limit tag")
-                except Exception as e:
-                    logging.error(f"Error ending overtime session: {e}")
+
+        if now.hour < WORK_END_HOUR:
+            return
+
+        for tag_uuid, session in list(self.state_manager.get_active_sessions().items()):
+            try:
+                logging.info(f"Ending overtime session for {session['user_data']['name']}")
+                endResponse = logger.terminateLog(tag_uuid)
+
+                if endResponse and 'id' in endResponse:
+                    # Add time limit tag to the entry
+                    workspace_id = session["user_data"]["workspace_id"]
+                    tag_url = f'https://api.clockify.me/api/v1/workspaces/{workspace_id}/time-entries/{endResponse["id"]}'
+                    logger.logger_instance.headers['Content-Type'] = 'application/json'
+                    requests.put(
+                        tag_url,
+                        headers=logger.logger_instance.headers,
+                        json={
+                            **endResponse,
+                            'tagIds': [TIMELIMIT_TAG_ID]
+                        },
+                        timeout=REQUEST_TIMEOUT
+                    )
+
+                self.state_manager.end_session(tag_uuid)
+                logging.info(f"Successfully ended overtime session for {session['user_data']['name']}")
+            except Exception as e:
+                logging.error(f"Error ending overtime session: {e}")
 
     def check_startup_sessions(self):
-        """Check for active session from previous run"""
+        """Log any sessions left active from a previous run."""
         try:
-            session = self.state_manager.get_active_session()
-            if session:
+            sessions = self.state_manager.get_active_sessions()
+            for session in sessions.values():
                 user_name = session['user_data'].get('name', 'Unknown')
                 start_time = session['start_time']
                 logging.info(f"Found active session for {user_name} started at {start_time}")

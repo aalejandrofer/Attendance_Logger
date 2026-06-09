@@ -31,8 +31,9 @@ if __name__ == "__main__":
         # Main loop
         while True:
             try:
-                if lT.state.get_active_session():
-                    display.displayTimer()
+                active = lT.state.get_active_sessions()
+                if active:
+                    display.displayActive(len(active))
                 else:
                     display.waitingToRead()
 
@@ -44,11 +45,11 @@ if __name__ == "__main__":
                     sleep(1)
                     continue
 
-                if not lT.state.is_session_active(tag_uuid):
-                    lT.startTimer(user_data, tag_uuid)
-                else:
+                if lT.state.is_session_active(tag_uuid):
                     lT.endTimer(tag_uuid)
                     sleep(2)  # Show end message briefly
+                else:
+                    lT.startTimer(user_data, tag_uuid)
 
             except KeyboardInterrupt:
                 raise

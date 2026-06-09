@@ -6,8 +6,19 @@ sys.path.append('..')
 from config import SUPABASE_URL, SUPABASE_KEY
 
 class DatabaseManager:
-    def __init__(self):
-        self.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    """Singleton wrapper around the Supabase client.
+
+    Instantiated from several modules; we only ever want one underlying
+    client (and one connection pool) per process.
+    """
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            instance = super().__new__(cls)
+            instance.supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            cls._instance = instance
+        return cls._instance
     
     def get_user_by_tag(self, tag_id):
         """Get user and project details from tag ID - no caching"""

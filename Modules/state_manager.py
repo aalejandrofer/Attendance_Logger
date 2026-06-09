@@ -26,10 +26,9 @@ class StateManager:
     def _ensure_state_file(self):
         """Ensure state file exists with valid initial state"""
         initial_state = {
-            'active_session': None,
-            'current_entry': None
+            'sessions': {}
         }
-        
+
         try:
             if not os.path.exists(self.state_file):
                 with open(self.state_file, 'w') as f:
@@ -79,46 +78,50 @@ class StateManager:
                     self._release_lock(f)
         except Exception as e:
             logging.error(f"Error loading state: {e}")
-            return {
-                'active_session': None,
-                'current_entry': None
-            }
-    
-    def start_session(self, tag_uuid: str, user_data: dict) -> None:
-        """Start a new session"""
+            return {'sessions': {}}
+
+    def _sessions(self, state) -> dict:
+        """Return the sessions dict, tolerating legacy/corrupt state."""
+        sessions = state.get('sessions')
+        return sessions if isinstance(sessions, dict) else {}
+
+    def start_session(self, tag_uuid: str, user_data: dict, entry: dict) -> None:
+        """Start (or replace) a session for one RFID tag.
+
+        `entry` holds the Clockify context needed to end this exact entry later
+        (clockify_entry_id, workspace_id, start, billable, description, etc.).
+        """
         state = self._load_state()
-        state['active_session'] = {
+        sessions = self._sessions(state)
+        sessions[tag_uuid] = {
             'tag_uuid': tag_uuid,
             'start_time': datetime.now().strftime("%d-%m-%Y %H:%M"),
-            'user_data': user_data
+            'user_data': user_data,
+            'entry': entry,
         }
+        state['sessions'] = sessions
         self._save_state(state)
-        
-    def end_session(self) -> None:
-        """End the active session"""
+
+    def end_session(self, tag_uuid: str) -> None:
+        """End the session for one tag."""
         state = self._load_state()
-        state['active_session'] = None
+        sessions = self._sessions(state)
+        sessions.pop(tag_uuid, None)
+        state['sessions'] = sessions
         self._save_state(state)
-        
-    def get_active_session(self) -> Optional[dict]:
-        """Get active session if any"""
-        return self._load_state()['active_session']
-        
+
+    def get_session(self, tag_uuid: str) -> Optional[dict]:
+        """Get the active session for one tag, if any."""
+        return self._sessions(self._load_state()).get(tag_uuid)
+
+    def get_active_sessions(self) -> dict:
+        """Get all active sessions keyed by tag_uuid."""
+        return self._sessions(self._load_state())
+
     def is_session_active(self, tag_uuid: str) -> bool:
-        """Check if given tag has active session with safe access"""
+        """True if the given tag has an active session."""
         try:
-            session = self._load_state().get('active_session')
-            return session is not None and session.get('tag_uuid') == tag_uuid
+            return tag_uuid in self._sessions(self._load_state())
         except Exception as e:
             logging.error(f"Error checking session status: {e}")
             return False
-        
-    def save_entry(self, entry_data: dict) -> None:
-        """Save current Clockify entry data"""
-        state = self._load_state()
-        state['current_entry'] = entry_data
-        self._save_state(state)
-        
-    def get_entry(self) -> Optional[dict]:
-        """Get current Clockify entry data"""
-        return self._load_state()['current_entry']
