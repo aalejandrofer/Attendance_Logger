@@ -42,6 +42,8 @@ if __name__ == "__main__":
                 print(f"ID: {data}\n")
 
                 if not user_data:
+                    if data and data.strip():
+                        display.createRejectSound()  # unknown card
                     sleep(1)
                     continue
 

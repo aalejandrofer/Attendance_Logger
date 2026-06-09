@@ -54,11 +54,19 @@ class read_rfid():
     data=data.decode("utf-8")
     return data
 
-#Plays read sound
+#Plays read sound (accepted card)
 def createSound():
   GPIO.output(17,GPIO.HIGH)
   sleep(.2)
   GPIO.output(17,GPIO.LOW)
+
+#Plays reject sound (unknown card): two short beeps
+def createRejectSound():
+  for _ in range(2):
+    GPIO.output(17, GPIO.HIGH)
+    sleep(.05)
+    GPIO.output(17, GPIO.LOW)
+    sleep(.05)
 
 def welcomeUser():
   display.DrawRect()

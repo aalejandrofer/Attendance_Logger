@@ -7,11 +7,12 @@ from typing import Optional
 from config import STATE_FILE
 
 class StateManager:
-    def __init__(self, root_dir):
+    def __init__(self, root_dir=None, state_file=None):
+        # `state_file` is injectable for tests; defaults to the configured path.
         self.root_dir = root_dir
-        self.state_file = STATE_FILE
-        storage_dir = os.path.dirname(STATE_FILE)
-        if not os.path.exists(storage_dir):
+        self.state_file = state_file or STATE_FILE
+        storage_dir = os.path.dirname(self.state_file)
+        if storage_dir and not os.path.exists(storage_dir):
             os.makedirs(storage_dir, exist_ok=True)
         self._ensure_state_file()
     

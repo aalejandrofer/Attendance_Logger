@@ -1,0 +1,16 @@
+[Unit]
+Description=Attendance Logger Service
+# Needs the network for Clockify + Supabase at startup.
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/Attendance_Logger
+ExecStart=/usr/bin/python3 /home/pi/Attendance_Logger/main.py
+# Self-heal: restart on any exit (crash, error, or clean stop), not just abort.
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,6 @@
 import logging
 import os
+from logging.handlers import RotatingFileHandler
 from time import sleep
 from config import ROOT_DIR
 # Modules
@@ -15,11 +16,19 @@ from Modules.state_manager import StateManager
 db = DatabaseManager()
 state = StateManager(ROOT_DIR)
 
-logging.basicConfig(
-    filename=os.path.join(ROOT_DIR, 'attendance.log'),
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+# Rotate the log so it can't grow without bound (1 MB x 3 backups).
+# Attach explicitly rather than via basicConfig: imported libraries (supabase
+# /httpx) may configure the root logger first, which makes basicConfig a no-op.
+_log_handler = RotatingFileHandler(
+    os.path.join(ROOT_DIR, 'attendance.log'),
+    maxBytes=1_000_000,
+    backupCount=3,
 )
+_log_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+_root_logger = logging.getLogger()
+_root_logger.setLevel(logging.INFO)
+if not any(isinstance(h, RotatingFileHandler) for h in _root_logger.handlers):
+    _root_logger.addHandler(_log_handler)
 
 def checkRFData(data):
     user_data = db.get_user_by_tag(data)
