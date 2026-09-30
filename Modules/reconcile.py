@@ -1,70 +1,56 @@
-"""Pure reconciliation logic between Clockify (source of truth) and local state.
+"""Pure reconciliation logic between Clockify and the local DB.
 
-No hardware, config, or network imports — kept pure so it is unit-testable in
-isolation. The caller fetches the inputs (Supabase projects, Clockify
-in-progress entries, current local sessions) and applies the returned actions.
+No hardware, config, or network imports, so it is unit-testable in
+isolation. The caller fetches the inputs and applies the returned actions.
 """
 
 
-def reconcile_sessions(projects, in_progress_entries, active_sessions):
+def reconcile_sessions(cards, in_progress_entries, active_sessions, known_entry_ids=()):
     """Compute how to bring local sessions in line with Clockify.
 
     Args:
-        projects: list of Supabase project rows. Each maps a tag to a person:
+        cards: local card rows, each mapping a tag to a person:
             {tag_uuid, name, user_id, project_id, workspace_id, task_id}.
-        in_progress_entries: list of Clockify in-progress time entries (the
-            shape Clockify returns: id, projectId, taskId, workspaceId,
-            description, billable, timeInterval.start).
-        active_sessions: current local sessions keyed by tag_uuid.
+        in_progress_entries: Clockify in-progress time entries (id,
+            projectId, taskId, workspaceId, description, billable,
+            timeInterval.start).
+        active_sessions: {tag_uuid: {clockify_entry_id, clockify_synced}}
+            for local entries that are still active.
+        known_entry_ids: every Clockify id already in the local DB. A
+            running Clockify entry in this set was ended locally and is
+            waiting to be pushed, so it must not be recovered.
 
     Returns:
         (to_add, to_remove)
-        to_add: {tag_uuid: (user_data, entry)} sessions to create — Clockify
-            entries that have no matching local session (e.g. lost to a crash,
-            or a timer that was running across a restart).
-        to_remove: [tag_uuid] sessions to drop — local sessions whose Clockify
-            entry is no longer in progress (ended elsewhere).
+        to_add: {tag_uuid: (card, clockify_entry)} running Clockify entries
+            with no local session (lost to a crash, or started elsewhere).
+        to_remove: [tag_uuid] synced local sessions whose Clockify entry is
+            no longer running (ended elsewhere). Sessions with unpushed
+            changes are left alone: Clockify can't know about them yet.
     """
     by_project = {}
-    for p in projects:
-        # First project row wins if a project_id somehow repeats.
-        by_project.setdefault(p['project_id'], p)
+    for c in cards:
+        # First card wins if a project_id somehow repeats.
+        by_project.setdefault(c['project_id'], c)
 
+    known = set(known_entry_ids)
     live_entry_ids = set()
     to_add = {}
 
     for e in in_progress_entries:
         live_entry_ids.add(e['id'])
-        proj = by_project.get(e.get('projectId'))
-        if not proj:
-            # Running entry we can't map back to a tag; leave it alone.
+        if e['id'] in known:
             continue
-        tag = proj['tag_uuid']
-        if tag in active_sessions:
-            continue  # already tracked locally
-
-        user_data = {
-            'name': proj['name'],
-            'user_id': proj['user_id'],
-            'project_id': proj['project_id'],
-            'workspace_id': proj['workspace_id'],
-            'task_id': proj['task_id'],
-        }
-        entry = {
-            'clockify_entry_id': e['id'],
-            'workspace_id': e.get('workspaceId') or proj['workspace_id'],
-            'projectId': e.get('projectId'),
-            'taskId': e.get('taskId'),
-            'description': e.get('description'),
-            'start': e['timeInterval']['start'],
-            'billable': e.get('billable', True),
-        }
-        to_add[tag] = (user_data, entry)
+        card = by_project.get(e.get('projectId'))
+        if not card or card['tag_uuid'] in active_sessions:
+            continue
+        to_add[card['tag_uuid']] = (card, e)
 
     to_remove = [
         tag
-        for tag, session in active_sessions.items()
-        if (session.get('entry') or {}).get('clockify_entry_id') not in live_entry_ids
+        for tag, s in active_sessions.items()
+        if s.get('clockify_synced') and s.get('clockify_entry_id')
+        and s['clockify_entry_id'] not in live_entry_ids
     ]
 
     return to_add, to_remove

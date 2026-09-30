@@ -1,69 +1,82 @@
 #!/usr/bin/python3
-from time import sleep
+import logging
 import os
+from logging.handlers import RotatingFileHandler
+from time import sleep
 
-# Modules
-import Modules.display as display
-import Modules.loggerTools as lT
+from config import ROOT_DIR, STATE_FILE, SYNC_INTERVAL
 from Modules.time_checker import TimeChecker
+from Modules.wiring import build
+import Modules.display as display
 
-# Coded in Python 3.8
-# Install Pip3 to get the requests dependancy
-# Example: sudo apt-get -y install python3-pip python3 && pip3 install requests apscheduler
+
+def setup_logging():
+    # Rotate the log so it can't grow without bound (1 MB x 3 backups).
+    handler = RotatingFileHandler(
+        os.path.join(ROOT_DIR, 'attendance.log'), maxBytes=1_000_000, backupCount=3)
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    root.addHandler(handler)
+    # Also to stderr, which systemd sends to the journal.
+    console = logging.StreamHandler()
+    console.setFormatter(logging.Formatter('%(levelname)s - %(message)s'))
+    root.addHandler(console)
+
+
+def show_idle(app):
+    count = app.active_count()
+    if count:
+        display.displayActive(count)
+    else:
+        display.waitingToRead()
+
 
 if __name__ == "__main__":
-    # Ensure storage directory exists
-    storage_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'localstorage')
-    if not os.path.exists(storage_dir):
-        os.makedirs(storage_dir)
-
+    setup_logging()
     display.welcomeUser()
     sleep(0.5)
 
-    print("Starting Up ...\n")
-    
-    # Start time checker and check for leftover sessions
-    time_checker = TimeChecker(check_interval=300)
-    time_checker.reconcile() # Sync local state with Clockify before the loop
+    app = build()
+    imported = app.import_legacy_state(STATE_FILE)
+    if imported:
+        logging.info("Imported %d session(s) from state.json", imported)
+    if not app.db.all_cards():
+        logging.info("No local cards; imported %d from Supabase", app.syncer.import_cards())
+
+    # Overtime, sync queue, reconcile: now and every SYNC_INTERVAL seconds.
+    time_checker = TimeChecker(app.tick, check_interval=SYNC_INTERVAL)
     time_checker.start()
-    
+
     try:
-        # Main loop
         while True:
             try:
-                active = lT.state.get_active_sessions()
-                if active:
-                    display.displayActive(len(active))
-                else:
-                    display.waitingToRead()
-
+                show_idle(app)
                 data = display.read_rfid.read_rfid()
-                user_data, tag_uuid = lT.checkRFData(data)
-                print(f"ID: {data}\n")
+                if not data or not data.strip():
+                    continue
 
-                if not user_data:
-                    if data and data.strip():
-                        display.createRejectSound()  # unknown card
+                result, name = app.tap(data)
+                if result == 'unknown':
+                    display.createRejectSound()
                     sleep(1)
                     continue
 
-                if lT.state.is_session_active(tag_uuid):
-                    lT.endTimer(tag_uuid)
-                    sleep(2)  # Show end message briefly
+                display.createSound()
+                if result == 'in':
+                    display.displayRead(name)
                 else:
-                    lT.startTimer(user_data, tag_uuid)
+                    display.displayEnd()
+                sleep(2)  # show the message briefly
 
             except KeyboardInterrupt:
                 raise
             except Exception as e:
                 # A garbled serial read or transient error must not kill the device.
-                print(f"[ERROR] loop iteration failed: {e}\n")
+                logging.error("Loop iteration failed: %s", e)
                 sleep(1)
 
     except KeyboardInterrupt:
         print("\nShutting down...")
     finally:
         time_checker.stop()
-
-
-
