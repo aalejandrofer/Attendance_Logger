@@ -1,0 +1,6 @@
+[Unit]
+Description=Wifi watchdog for the Attendance Logger
+
+[Service]
+Type=oneshot
+ExecStart=/home/pi/Attendance_Logger/deploy/wifi-watchdog.sh

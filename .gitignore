@@ -139,7 +139,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Local storage
+# Local storage (SQLite DB, legacy state)
 localstorage/
+*.db
+*.db-wal
+*.db-shm
+*.log.*
+id.txt
 *.conf
 *.log
